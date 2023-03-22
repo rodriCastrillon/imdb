@@ -1,5 +1,6 @@
 package com.imdb.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -27,6 +28,9 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
     }
 
     composable(route = DashBoardDestination.route) {
-        DashBoardScreen()
+        DashBoardScreen(
+            onNavigate = {},
+            viewModel = hiltViewModel()
+        )
     }
 }

@@ -20,6 +20,9 @@ fun NavGraphBuilder.splashGraph(navController: NavController) {
     }
 
     composable(route = LoginDestination.route) {
-        LoginScreen(onNavigate = {})
+        LoginScreen(onNavigate = {
+            navController.popBackStack()
+            navController.navigate(DashBoardDestination.route)
+        })
     }
 }
