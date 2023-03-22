@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.imdb.R
+import com.imdb.ui.theme.black000000
+import com.imdb.ui.theme.yellowF6C700
+import java.util.Locale
 import kotlinx.coroutines.delay
 
 @Composable
@@ -33,20 +33,17 @@ fun SplashScreen(onNavigate: () -> Unit) {
 @Composable
 fun Splash() {
 
-    val gradientBackground = Brush.verticalGradient(listOf(Color.Black, Color.Yellow))
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradientBackground),
+            .background(yellowF6C700),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h3.copy(
-                color = Color.White,
-                fontSize = 32.sp,
+            style = MaterialTheme.typography.h2.copy(
+                color = black000000,
                 fontWeight = FontWeight.Bold
             )
         )
