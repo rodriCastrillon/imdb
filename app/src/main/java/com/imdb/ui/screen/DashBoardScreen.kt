@@ -33,8 +33,10 @@ fun DashBoardScreen(onNavigate: () -> Unit, viewModel: MovieViewModel) {
                 state = rememberLazyListState()
             ) {
                 itemsIndexed(movieState.data) { _, movie ->
-                    Text(text = movie.title,
-                    modifier = Modifier.padding(vertical = normal, horizontal = medium))
+                    Text(
+                        text = movie.title,
+                        modifier = Modifier.padding(vertical = normal, horizontal = medium)
+                    )
                 }
             }
         }

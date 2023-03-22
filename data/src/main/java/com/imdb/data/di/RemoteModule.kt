@@ -1,6 +1,5 @@
 package com.imdb.data.di
 
-import com.imdb.common.BuildConfig
 import com.imdb.common.Constants.API_KEY
 import com.imdb.common.Constants.BASE_URL
 import com.imdb.data.network.MovieService
@@ -28,30 +27,21 @@ object RemoteModule {
 
     @Singleton
     @Provides
-    fun provideHttpClient() = if (BuildConfig.DEBUG) {
-        val requestInterceptor = Interceptor { chain ->
-            val url = chain.request()
-                .url
-                .newBuilder()
-                .addQueryParameter("api_key", API_KEY)
-                .build()
-
-            val request = chain.request()
-                .newBuilder()
-                .url(url)
-                .build()
-            return@Interceptor chain.proceed(request)
-        }
-
-        OkHttpClient
+    fun provideHttpClient(): OkHttpClient {
+        return OkHttpClient
             .Builder()
-            .addInterceptor(requestInterceptor)
+            .addInterceptor(Interceptor { chain ->
+                return@Interceptor chain.proceed(chain.request()
+                    .newBuilder()
+                    .url(chain.request()
+                        .url
+                        .newBuilder()
+                        .addQueryParameter("api_key", API_KEY)
+                        .build())
+                    .build())
+            })
             .readTimeout(15, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
-            .build()
-    } else {
-        OkHttpClient
-            .Builder()
             .build()
     }
 
