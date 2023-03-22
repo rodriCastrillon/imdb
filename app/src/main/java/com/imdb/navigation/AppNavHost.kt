@@ -10,8 +10,11 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = SplashDestination.route
 ) {
-    NavHost(navController = navController, startDestination = startDestination){
-        loginGraph(navController = navController)
+    NavHost(navController = navController, startDestination = startDestination) {
+        loginGraph(navController = navController,
+            onBack = {
+            navController.popBackStack(LoginDestination.route, false)
+        })
         splashGraph(navController = navController)
     }
 }

@@ -22,9 +22,9 @@ object DashBoardDestination : DestinationNav {
     override val destination = "dashboard_destination"
 }
 
-fun NavGraphBuilder.loginGraph(navController: NavController) {
+fun NavGraphBuilder.loginGraph(navController: NavController, onBack: () -> Unit) {
     composable(route = RegisterDestination.route) {
-        RegisterScreen()
+        RegisterScreen(onBack = { onBack() })
     }
 
     composable(route = DashBoardDestination.route) {

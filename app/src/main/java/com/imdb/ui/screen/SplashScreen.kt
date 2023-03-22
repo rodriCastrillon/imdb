@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.imdb.R
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.yellowF6C700
-import java.util.Locale
 import kotlinx.coroutines.delay
 
 @Composable

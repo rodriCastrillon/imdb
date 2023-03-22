@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">IMDb</string>
+    <string name="username">Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="forgot_password">¿Olvidaste la contraseña?</string>
+    <string name="button_login">Login</string>
+    <string name="login_with">O puedes ingresar con</string>
+    <string name="no_account">¿No tienes cuenta?</string>
+    <string name="register">Registrate</string>
+    <string name="continue_as_guest">Continuar como invitado</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.imdb.ui.screen
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -11,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.components.LoadErrorScreen
+import com.imdb.ui.theme.medium
+import com.imdb.ui.theme.normal
 import com.imdb.viewmodel.MovieViewModel
 
 @Composable
@@ -30,7 +33,8 @@ fun DashBoardScreen(onNavigate: () -> Unit, viewModel: MovieViewModel) {
                 state = rememberLazyListState()
             ) {
                 itemsIndexed(movieState.data) { _, movie ->
-                    Text(text = movie.title)
+                    Text(text = movie.title,
+                    modifier = Modifier.padding(vertical = normal, horizontal = medium))
                 }
             }
         }
