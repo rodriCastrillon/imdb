@@ -14,4 +14,6 @@
     <string name="name">Nombre</string>
     <string name="email">Correo electrónico</string>
     <string name="search">Search</string>
+    <string name="registered">Registro exitoso</string>
+    <string name="exist">El usuario ya esta registrado</string>
 </resources>

@@ -6,5 +6,5 @@ import com.imdb.data.db.MovieEntity
 
 interface MovieLocalDataSource {
     suspend fun getTopRated(): Either<ErrorFactory, List<MovieEntity>>
-    suspend fun insert(movieEntity: List<MovieEntity>)
+    suspend fun insert(entity: List<MovieEntity>)
 }

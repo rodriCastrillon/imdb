@@ -1,4 +1,4 @@
-package com.imdb.common
+package com.imdb.common.extensionFunctions
 
 import android.annotation.SuppressLint
 import java.text.ParseException

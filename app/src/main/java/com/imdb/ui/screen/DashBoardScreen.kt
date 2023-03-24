@@ -1,13 +1,10 @@
 package com.imdb.ui.screen
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,7 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.imdb.R
-import com.imdb.common.toYYYY
+import com.imdb.common.extensionFunctions.toYYYY
 import com.imdb.state.MovieState
 import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.components.LoadErrorScreen
@@ -50,8 +47,7 @@ import com.imdb.viewmodel.MovieViewModel
 @Composable
 fun DashBoardScreen(onNavigate: () -> Unit, viewModel: MovieViewModel) {
     val movieState by viewModel.movieState.collectAsState()
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
-    val searchedText = textState.value.text
+    val query = remember { mutableStateOf(TextFieldValue("")) }
 
     when {
         movieState.isLoading -> {
@@ -67,11 +63,11 @@ fun DashBoardScreen(onNavigate: () -> Unit, viewModel: MovieViewModel) {
                     .fillMaxWidth()
             ) {
                 SearchView(
-                    state = textState,
+                    state = query,
                     placeholder = stringResource(id = R.string.search),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = medium,vertical = large)
+                        .padding(horizontal = medium, vertical = large)
                 )
 
                 LazyColumn(
@@ -79,7 +75,7 @@ fun DashBoardScreen(onNavigate: () -> Unit, viewModel: MovieViewModel) {
                         .fillMaxWidth(),
                     state = rememberLazyListState()
                 ) {
-                    itemsIndexed(movieState.data) { _, movie ->
+                    itemsIndexed(viewModel.searchQuery(query.value.text)) { _, movie ->
                         ItemMovie(movieState = movie)
                     }
                 }

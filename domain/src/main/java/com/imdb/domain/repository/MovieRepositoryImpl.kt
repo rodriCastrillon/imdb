@@ -32,7 +32,7 @@ class MovieRepositoryImpl @Inject constructor(
                 }
 
                 is Either.Left -> {
-                    Either.Left(response.l)
+                    Either.Left(ErrorFactory(102))
                 }
             }
         }

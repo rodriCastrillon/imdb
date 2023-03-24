@@ -1,5 +1,6 @@
 package com.imdb.ui.screen
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,10 +39,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.imdb.R
+import com.imdb.common.extensionFunctions.toHashSha1
+import com.imdb.common.helper.LoadState
 import com.imdb.ui.components.BackArrow
+import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.gray4B4747
 import com.imdb.ui.theme.gray9D9C9C
@@ -49,15 +54,16 @@ import com.imdb.ui.theme.small
 import com.imdb.ui.theme.whiteF5F5F5
 import com.imdb.ui.theme.xlarge
 import com.imdb.ui.theme.yellowF6C700
-
+import com.imdb.viewmodel.RegisterViewModel
 
 @Composable
-fun RegisterScreen(onBack: () -> Unit) {
-
-    var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
+fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
+    val registerState by viewModel.registerState.collectAsState()
+    val resultState = viewModel.resultState.collectAsState().value
+    var nameState by rememberSaveable { mutableStateOf("") }
+    var emailState by rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
-    var password by rememberSaveable { mutableStateOf("") }
+    var passwordState by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
 
     val icon = if (passwordVisibility)
@@ -86,6 +92,7 @@ fun RegisterScreen(onBack: () -> Unit) {
         }
 
     ) { paddingValue ->
+
         Column(
             modifier = Modifier
                 .padding(
@@ -118,7 +125,7 @@ fun RegisterScreen(onBack: () -> Unit) {
             )
 
             OutlinedTextField(
-                value = name,
+                value = nameState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = normal)
@@ -140,7 +147,8 @@ fun RegisterScreen(onBack: () -> Unit) {
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    name = it
+                    nameState = it
+                    registerState.apply { name = nameState }
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text
@@ -148,7 +156,7 @@ fun RegisterScreen(onBack: () -> Unit) {
             )
 
             OutlinedTextField(
-                value = email,
+                value = emailState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = normal)
@@ -169,14 +177,17 @@ fun RegisterScreen(onBack: () -> Unit) {
                 ),
                 maxLines = 1,
                 singleLine = true,
-                onValueChange = { email = it },
+                onValueChange = {
+                    emailState = it
+                    registerState.apply { email = emailState }
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
                 )
             )
 
             OutlinedTextField(
-                value = password,
+                value = passwordState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = normal)
@@ -200,7 +211,8 @@ fun RegisterScreen(onBack: () -> Unit) {
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    password = it
+                    passwordState = it
+                    registerState.apply { password = (emailState.plus(passwordState)).toHashSha1() }
                 },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -219,18 +231,20 @@ fun RegisterScreen(onBack: () -> Unit) {
                 else PasswordVisualTransformation()
             )
 
-            Text(
-                text = stringResource(id = R.string.required_characters),
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.overline.copy(
-                    color = gray9D9C9C,
-                    fontWeight = FontWeight.Normal
+            if (!viewModel.validatedPassword) {
+                Text(
+                    text = stringResource(id = R.string.required_characters),
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MaterialTheme.typography.overline.copy(
+                        color = gray9D9C9C,
+                        fontWeight = FontWeight.Normal
+                    )
                 )
-            )
+            }
 
             Button(
                 onClick = {
-
+                    viewModel.register(passwordState)
                 },
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(backgroundColor = gray4B4747),
@@ -250,10 +264,19 @@ fun RegisterScreen(onBack: () -> Unit) {
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(onBack = {})
+    val localContext = LocalContext.current
+    when (resultState) {
+        is LoadState.Failure -> {
+            Toast.makeText(localContext, R.string.exist, Toast.LENGTH_LONG).show()
+        }
+        is LoadState.Loading -> {
+            LinearProgressBarCustom()
+        }
+        is LoadState.Success -> {
+            Toast.makeText(localContext, R.string.registered, Toast.LENGTH_LONG).show()
+            onBack()
+        }
+        LoadState.InFlight -> {}
+    }
 }

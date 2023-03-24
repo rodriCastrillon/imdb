@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.imdb.common.Constants.DATABASE_NAME
 import com.imdb.data.db.MovieDataBase
-import com.imdb.data.db.MovieLocal
+import com.imdb.data.db.MovieQuery
+import com.imdb.data.db.RegisterQuery
 import com.imdb.data.source.local.MovieLocalDataSource
 import com.imdb.data.source.local.MovieLocalDataSourceImpl
+import com.imdb.data.source.local.RegisterLocalDataSource
+import com.imdb.data.source.local.RegisterLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +23,14 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun provideChannelDao(database: MovieDataBase): MovieLocal {
+    fun provideMovieDao(database: MovieDataBase): MovieQuery {
         return database.movieLocal()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterDao(database: MovieDataBase): RegisterQuery {
+        return database.registerLocal()
     }
 
     @Provides
@@ -36,6 +45,11 @@ object LocalModule {
 
     @Singleton
     @Provides
-    fun providerInterface(local: MovieLocal): MovieLocalDataSource =
-        MovieLocalDataSourceImpl(local)
+    fun providerMovieDataSource(query: MovieQuery): MovieLocalDataSource =
+        MovieLocalDataSourceImpl(query)
+
+    @Singleton
+    @Provides
+    fun providerRegisterDataSource(query: RegisterQuery): RegisterLocalDataSource =
+        RegisterLocalDataSourceImpl(query)
 }
