@@ -6,6 +6,9 @@ import com.imdb.data.network.MovieService
 import com.imdb.data.response.MovieResponse
 import javax.inject.Inject
 
+/**
+ * Test class [MovieRemoteDataSourceImplTest]
+ */
 class MovieRemoteDataSourceImpl @Inject constructor(private val service: MovieService) :
     MovieRemoteDataSource {
     override suspend fun getTopRated(): Either<ErrorFactory, MovieResponse> =

@@ -1,7 +1,7 @@
 package com.imdb.domain.model
 
 data class MovieModel(
-    val id: Int,
+    val id: String,
     val adult: Boolean,
     val backdrop_path: String,
     val genre_ids: List<Int>,

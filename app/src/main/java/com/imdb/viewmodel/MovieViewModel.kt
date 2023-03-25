@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 class MovieViewModel @Inject constructor(private val useCase: MovieUseCase) : ViewModel() {
 
     var stateErrorMessage by mutableStateOf("")
-        private set
 
     private val _movieState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
     val movieState = _movieState.asStateFlow()
@@ -29,7 +28,7 @@ class MovieViewModel @Inject constructor(private val useCase: MovieUseCase) : Vi
         getTopRated()
     }
 
-    fun getTopRated() {
+    private fun getTopRated() {
         viewModelScope.launch {
             val newState = useCase.getTopRated()
                 .fold({
@@ -41,4 +40,20 @@ class MovieViewModel @Inject constructor(private val useCase: MovieUseCase) : Vi
             _movieState.update { newState }
         }
     }
+
+    fun searchQuery(query: String): List<MovieState> =
+        when (query.isNotEmpty()) {
+            true -> {
+                val moviesFiltered = mutableListOf<MovieState>()
+
+                _movieState.value.data.forEach { movie ->
+                    if (movie.title.lowercase().contains(query.lowercase())) {
+                        moviesFiltered.add(movie)
+                    }
+                }
+
+                moviesFiltered
+            }
+            else -> _movieState.value.data
+        }
 }

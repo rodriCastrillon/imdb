@@ -24,7 +24,10 @@ object DashBoardDestination : DestinationNav {
 
 fun NavGraphBuilder.loginGraph(navController: NavController, onBack: () -> Unit) {
     composable(route = RegisterDestination.route) {
-        RegisterScreen(onBack = { onBack() })
+        RegisterScreen(
+            onBack = { onBack() },
+            viewModel = hiltViewModel()
+        )
     }
 
     composable(route = DashBoardDestination.route) {
