@@ -9,5 +9,7 @@ fun RegisterState.toRegisterModel() = RegisterModel(
     password = password,
     name = name,
     lastname = lastname,
-    provider = provider
+    provider = provider,
+    urlPhoto = urlPhoto,
+    token = token
 )

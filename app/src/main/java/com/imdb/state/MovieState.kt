@@ -1,7 +1,7 @@
 package com.imdb.state
 
 data class MovieState(
-    val id: Int,
+    val id: String,
     val title: String,
     val overview: String,
     val adult: Boolean,

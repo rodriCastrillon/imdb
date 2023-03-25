@@ -9,7 +9,9 @@ fun RegisterEntity.toRegisterModel() = RegisterModel(
     password = password,
     name = name,
     lastname = lastname,
-    provider = provider
+    provider = provider,
+    urlPhoto = urlPhoto,
+    token = token
 )
 
 fun RegisterModel.toRegisterEntity() = RegisterEntity(
@@ -18,5 +20,7 @@ fun RegisterModel.toRegisterEntity() = RegisterEntity(
     password = password,
     name = name,
     lastname = lastname,
-    provider = provider
+    provider = provider,
+    urlPhoto = urlPhoto,
+    token = token
 )

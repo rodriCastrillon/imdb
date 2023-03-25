@@ -1,5 +1,8 @@
 package com.imdb.ui.screen
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +44,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.imdb.R
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.gray4B4747
@@ -53,9 +56,15 @@ import com.imdb.ui.theme.small
 import com.imdb.ui.theme.whiteF5F5F5
 import com.imdb.ui.theme.xlarge
 import com.imdb.ui.theme.yellowF6C700
+import com.imdb.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(onNavigateHome: () -> Unit, onNavigateRegister: () -> Unit) {
+fun LoginScreen(
+    activity: Activity,
+    onNavigateHome: () -> Unit,
+    onNavigateRegister: () -> Unit,
+    viewModel: LoginViewModel
+) {
     val focusManager = LocalFocusManager.current
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -65,6 +74,17 @@ fun LoginScreen(onNavigateHome: () -> Unit, onNavigateRegister: () -> Unit) {
         painterResource(id = R.drawable.ic_visibility)
     else
         painterResource(id = R.drawable.ic_visibility_off)
+
+    val startForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val intent = it.data
+                if (it.data != null) {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
+                    viewModel.handleSignInResult(task)
+                }
+            }
+        }
 
     Column(
         modifier = Modifier
@@ -83,7 +103,9 @@ fun LoginScreen(onNavigateHome: () -> Unit, onNavigateRegister: () -> Unit) {
 
             Text(
                 text = stringResource(R.string.app_name),
-                modifier = Modifier.fillMaxWidth().padding(top = large),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = large),
                 style = MaterialTheme.typography.h2.copy(
                     color = black000000,
                     textAlign = TextAlign.Center,
@@ -206,7 +228,9 @@ fun LoginScreen(onNavigateHome: () -> Unit, onNavigateRegister: () -> Unit) {
                 )
             )
 
-            ButtonsLogin()
+            ButtonsLogin(googleSign = {
+                startForResult.launch(viewModel.loginAuthGoogle(activity).signInIntent)
+            })
 
             Row(
                 modifier = Modifier
@@ -250,7 +274,7 @@ fun LoginScreen(onNavigateHome: () -> Unit, onNavigateRegister: () -> Unit) {
 }
 
 @Composable
-fun ButtonsLogin() {
+fun ButtonsLogin(googleSign: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -285,7 +309,7 @@ fun ButtonsLogin() {
         }
 
         Button(
-            onClick = { },
+            onClick = { googleSign() },
             colors = ButtonDefaults.buttonColors(whiteF5F5F5),
             modifier = Modifier.size(70.dp),
             shape = CircleShape
@@ -297,12 +321,5 @@ fun ButtonsLogin() {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(onNavigateHome = {},
-        onNavigateRegister = {})
 }
 

@@ -6,7 +6,7 @@ import com.imdb.data.response.MovieDetailResponse
 import com.imdb.domain.model.MovieModel
 
 fun MovieDetailResponse.toMovieModel() = MovieModel(
-    id = id,
+    id = id.toString(),
     adult = adult,
     genre_ids = genre_ids,
     original_language = original_language,
@@ -39,7 +39,7 @@ fun MovieDetailResponse.toMovieEntity() = MovieEntity(
 )
 
 fun MovieEntity.toMovieModel() = MovieModel(
-    id = id,
+    id = id.toString(),
     adult = adult,
     backdrop_path = backdrop_path,
     genre_ids = emptyList(),

@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ImdbTheme {
-                AppNavHost(navController = rememberNavController())
+                AppNavHost(activity = this, navController = rememberNavController())
             }
         }
     }

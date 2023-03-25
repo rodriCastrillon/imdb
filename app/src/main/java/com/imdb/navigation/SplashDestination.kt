@@ -1,5 +1,7 @@
 package com.imdb.navigation
 
+import android.app.Activity
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -11,21 +13,26 @@ object SplashDestination : DestinationNav {
     override val destination: String = "splash_destination"
 }
 
-fun NavGraphBuilder.splashGraph(navController: NavController) {
+fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController) {
+
     composable(route = SplashDestination.route) {
         SplashScreen(onNavigate = {
             navController.popBackStack()
-            navController.navigate(LoginDestination.route)
-        })
+            navController.navigate(LoginDestination.route) }
+        )
     }
 
     composable(route = LoginDestination.route) {
-        LoginScreen(onNavigateHome = {
-            navController.popBackStack()
-            navController.navigate(DashBoardDestination.route)
-        },
+        LoginScreen(
+            activity = activity,
+            onNavigateHome = {
+                navController.popBackStack()
+                navController.navigate(DashBoardDestination.route)
+            },
             onNavigateRegister = {
                 navController.navigate(RegisterDestination.route)
-            })
+            },
+            viewModel = hiltViewModel()
+        )
     }
 }
