@@ -8,11 +8,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MovieLocalDataSourceImpl @Inject constructor(private val local: MovieQuery) :
+class MovieLocalDataSourceImpl @Inject constructor(private val query: MovieQuery) :
     MovieLocalDataSource {
     override suspend fun getTopRated(): Either<ErrorFactory, List<MovieEntity>> =
         try {
-            val response = withContext(Dispatchers.IO) { local.select() }
+            val response = withContext(Dispatchers.IO) { query.select() }
 
             when {
                 response.isNotEmpty() -> {
@@ -23,8 +23,8 @@ class MovieLocalDataSourceImpl @Inject constructor(private val local: MovieQuery
                 }
             }
         } catch (exception: Exception) {
-            Either.Left(ErrorFactory())
+            Either.Left(ErrorFactory(errorCode = exception.hashCode()))
         }
 
-    override suspend fun insert(entity: List<MovieEntity>) = local.transaction(entity)
+    override suspend fun insert(entity: List<MovieEntity>) = query.transaction(entity)
 }

@@ -1,7 +1,11 @@
 package com.imdb.viewmodel
 
 import android.app.Activity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -11,13 +15,33 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.imdb.R
-import com.imdb.mapper.LoginProvider
+import com.imdb.common.extensionFunctions.toHashSha1
+import com.imdb.common.helper.LoadState
+import com.imdb.domain.usecase.LoginUseCase
+import com.imdb.domain.usecase.RegisterUseCase
+import com.imdb.common.helper.LoginProvider
+import com.imdb.mapper.toRegisterModel
+import com.imdb.mapper.toRegisterState
 import com.imdb.state.RegisterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val loginUseCase: LoginUseCase,
+    private val registerUseCase: RegisterUseCase
+) : ViewModel() {
+    var stateErrorMessage by mutableStateOf("")
+    private val _loginState = MutableStateFlow<LoadState<RegisterState>>(LoadState.InFlight)
+    val loginState = _loginState.asStateFlow()
+
+    var isUserNameFilled by mutableStateOf(true)
+    var isPasswordFilled by mutableStateOf(true)
+    fun onClear() = onCleared()
 
     fun handleSignInResult(task: Task<GoogleSignInAccount>) {
         try {
@@ -28,26 +52,27 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                 val credential = GoogleAuthProvider.getCredential(token, null)
                 auth.signInWithCredential(credential)
                     .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            signIgGoogle(
-                                registerState = RegisterState(
-                                    id = checkNotNull(account.id),
-                                    email = checkNotNull(account.email),
-                                    name = checkNotNull(account.givenName),
-                                    lastname = checkNotNull(account.familyName),
-                                    urlPhoto = checkNotNull(account.photoUrl.toString()),
-                                    token = checkNotNull(account.idToken),
-                                    provider = LoginProvider.Google.name
+                        when {
+                            task.isSuccessful -> {
+                                signIgGoogle(
+                                    registerState = RegisterState(
+                                        id = checkNotNull(account.id),
+                                        email = checkNotNull(account.email),
+                                        name = checkNotNull(account.givenName),
+                                        lastname = checkNotNull(account.familyName),
+                                        urlPhoto = checkNotNull(account.photoUrl.toString()),
+                                        token = checkNotNull(account.idToken),
+                                        provider = LoginProvider.Google.name,
+                                        isLogged = true
+                                    )
                                 )
-                            )
-                        } else {
-                            print("error")
+                            }
+                            else -> stateErrorMessage = checkNotNull(task.exception?.message)
                         }
                     }
             }
-
-        } catch (e: ApiException) {
-            print("")
+        } catch (apiException: ApiException) {
+            stateErrorMessage = checkNotNull(apiException.message)
         }
     }
 
@@ -62,6 +87,38 @@ class LoginViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun signIgGoogle(registerState: RegisterState) {
-        print(registerState)
+        viewModelScope.launch {
+            registerUseCase.register(registerState.toRegisterModel())
+                .fold({
+                    stateErrorMessage = it.message
+                    _loginState.update { LoadState.Failure }
+                }, {
+                    _loginState.update { LoadState.Success(registerState) }
+                })
+        }
+    }
+
+    fun signManual(email: String, password: String) {
+        isUserNameFilled = email.isNotEmpty()
+        isPasswordFilled = password.isNotEmpty()
+
+        when {
+            isUserNameFilled && isPasswordFilled -> {
+                viewModelScope.launch {
+                    loginUseCase.login(email = email, password = (email.plus(password).toHashSha1()))
+                        .fold({
+                            stateErrorMessage = it.message
+                            _loginState.update { LoadState.Failure }
+                        }, { result ->
+                            _loginState.update { LoadState.Success(result.toRegisterState()) }
+                        })
+                }
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _loginState.update { LoadState.InFlight }
     }
 }

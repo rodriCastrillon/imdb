@@ -1,9 +1,10 @@
 package com.imdb.domain.mapper
 
-import com.imdb.data.db.RegisterEntity
+import com.imdb.data.db.UserEntity
 import com.imdb.domain.model.RegisterModel
+import java.util.Date
 
-fun RegisterEntity.toRegisterModel() = RegisterModel(
+fun UserEntity.toRegisterModel() = RegisterModel(
     id = id,
     email = email,
     password = password,
@@ -11,10 +12,11 @@ fun RegisterEntity.toRegisterModel() = RegisterModel(
     lastname = lastname,
     provider = provider,
     urlPhoto = urlPhoto,
-    token = token
+    token = token,
+    isLogged = isLogged
 )
 
-fun RegisterModel.toRegisterEntity() = RegisterEntity(
+fun RegisterModel.toRegisterEntity() = UserEntity(
     id = id,
     email = email,
     password = password,
@@ -22,5 +24,7 @@ fun RegisterModel.toRegisterEntity() = RegisterEntity(
     lastname = lastname,
     provider = provider,
     urlPhoto = urlPhoto,
-    token = token
+    token = token,
+    isLogged = isLogged,
+    timeSession = Date()
 )

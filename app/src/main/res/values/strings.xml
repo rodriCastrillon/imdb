@@ -16,4 +16,5 @@
     <string name="search">Search</string>
     <string name="registered">Registro exitoso</string>
     <string name="exist">El usuario ya esta registrado</string>
+    <string name="field_required">%1$s is required</string>
 </resources>

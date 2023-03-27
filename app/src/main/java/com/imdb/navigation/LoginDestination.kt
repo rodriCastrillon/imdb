@@ -4,6 +4,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.imdb.state.UserState
 import com.imdb.ui.screen.DashBoardScreen
 import com.imdb.ui.screen.RegisterScreen
 
@@ -20,6 +21,7 @@ object RegisterDestination : DestinationNav {
 object DashBoardDestination : DestinationNav {
     override val route = "dashboard_route"
     override val destination = "dashboard_destination"
+    const val userState = ""
 }
 
 fun NavGraphBuilder.loginGraph(navController: NavController, onBack: () -> Unit) {
@@ -30,9 +32,10 @@ fun NavGraphBuilder.loginGraph(navController: NavController, onBack: () -> Unit)
         )
     }
 
-    composable(route = DashBoardDestination.route) {
+    composable(route = "${DashBoardDestination.route}/{${DashBoardDestination.userState}}") {
+        val userState = checkNotNull(it.arguments?.getBundle(DashBoardDestination.userState))
         DashBoardScreen(
-            onNavigate = {},
+            userState = UserState(),
             viewModel = hiltViewModel()
         )
     }

@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -29,10 +31,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +48,7 @@ import com.imdb.R
 import com.imdb.common.extensionFunctions.toHashSha1
 import com.imdb.common.helper.LoadState
 import com.imdb.ui.components.BackArrow
+import com.imdb.ui.components.FieldRequired
 import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.gray4B4747
@@ -56,6 +61,7 @@ import com.imdb.ui.theme.xlarge
 import com.imdb.ui.theme.yellowF6C700
 import com.imdb.viewmodel.RegisterViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
     val registerState by viewModel.registerState.collectAsState()
@@ -65,6 +71,7 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
     val focusManager = LocalFocusManager.current
     var passwordState by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val icon = if (passwordVisibility)
         painterResource(id = R.drawable.ic_visibility)
@@ -99,6 +106,7 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
                     horizontal = xlarge,
                     vertical = paddingValue.calculateTopPadding()
                 )
+                .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(normal)
         ) {
@@ -155,6 +163,10 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
                 )
             )
 
+            if (!viewModel.isNameFilled) {
+                FieldRequired(R.string.name)
+            }
+
             OutlinedTextField(
                 value = emailState,
                 modifier = Modifier
@@ -185,6 +197,10 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
                     keyboardType = KeyboardType.Email
                 )
             )
+
+            if (!viewModel.isEmailFilled) {
+                FieldRequired(R.string.email)
+            }
 
             OutlinedTextField(
                 value = passwordState,
@@ -231,6 +247,10 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
                 else PasswordVisualTransformation()
             )
 
+            if (!viewModel.isPasswordFilled) {
+                FieldRequired(R.string.password)
+            }
+
             if (!viewModel.validatedPassword) {
                 Text(
                     text = stringResource(id = R.string.required_characters),
@@ -244,7 +264,8 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
 
             Button(
                 onClick = {
-                    viewModel.register(passwordState)
+                    keyboardController?.hide()
+                    viewModel.register()
                 },
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(backgroundColor = gray4B4747),
@@ -268,7 +289,7 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
     val localContext = LocalContext.current
     when (resultState) {
         is LoadState.Failure -> {
-            Toast.makeText(localContext, R.string.exist, Toast.LENGTH_LONG).show()
+            Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
         }
         is LoadState.Loading -> {
             LinearProgressBarCustom()

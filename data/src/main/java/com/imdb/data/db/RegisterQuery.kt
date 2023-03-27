@@ -9,20 +9,20 @@ import androidx.room.Transaction
 @Dao
 interface RegisterQuery {
     @Transaction
-    suspend fun transaction(entity: RegisterEntity) {
+    suspend fun transaction(entity: UserEntity) {
         delete()
         insert(entity)
     }
 
-    @Query("SELECT * FROM register")
-    fun select(): RegisterEntity
+    @Query("SELECT * FROM user")
+    fun select(): UserEntity
 
-    @Query("SELECT COUNT(email) FROM register WHERE email = :email")
+    @Query("SELECT COUNT(email) FROM user WHERE email = :email")
     suspend fun selectByEmail(email:String): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: RegisterEntity)
+    suspend fun insert(entity: UserEntity)
 
-    @Query("DELETE FROM register")
+    @Query("DELETE FROM user")
     fun delete()
 }

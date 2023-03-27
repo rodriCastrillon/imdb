@@ -1,4 +1,4 @@
-package com.imdb.mapper
+package com.imdb.common.helper
 
 enum class LoginProvider {
     Manual,
