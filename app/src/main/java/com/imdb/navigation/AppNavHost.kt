@@ -13,7 +13,9 @@ fun AppNavHost(
     startDestination: String = SplashDestination.route
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
-        splashGraph(activity = activity, navController = navController)
+        splashGraph(activity = activity, navController = navController, popUpTo = {origin, destination ->
+            navController.navigate(destination) { popUpTo(origin) { inclusive = true } }
+        })
 
         loginGraph(navController = navController,
             onBack = {

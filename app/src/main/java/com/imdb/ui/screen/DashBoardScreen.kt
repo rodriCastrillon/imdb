@@ -29,10 +29,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.imdb.R
 import com.imdb.common.extensionFunctions.toYYYY
 import com.imdb.state.MovieState
+import com.imdb.state.UserState
 import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.components.LoadErrorScreen
 import com.imdb.ui.components.SearchView
@@ -45,7 +47,7 @@ import com.imdb.ui.theme.whiteF5F5F5
 import com.imdb.viewmodel.MovieViewModel
 
 @Composable
-fun DashBoardScreen(onNavigate: () -> Unit, viewModel: MovieViewModel) {
+fun DashBoardScreen(userState: UserState = UserState(), viewModel: MovieViewModel = hiltViewModel()) {
     val movieState by viewModel.movieState.collectAsState()
     val query = remember { mutableStateOf(TextFieldValue("")) }
 

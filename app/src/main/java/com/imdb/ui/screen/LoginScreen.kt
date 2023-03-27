@@ -1,6 +1,7 @@
 package com.imdb.ui.screen
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -28,14 +29,17 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -47,6 +51,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.imdb.R
+import com.imdb.common.helper.LoadState
+import com.imdb.ui.components.FieldRequired
+import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.gray4B4747
 import com.imdb.ui.theme.gray9D9C9C
@@ -58,6 +65,7 @@ import com.imdb.ui.theme.xlarge
 import com.imdb.ui.theme.yellowF6C700
 import com.imdb.viewmodel.LoginViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(
     activity: Activity,
@@ -65,10 +73,12 @@ fun LoginScreen(
     onNavigateRegister: () -> Unit,
     viewModel: LoginViewModel
 ) {
+    val loginState by viewModel.loginState.collectAsState()
     val focusManager = LocalFocusManager.current
-    var username by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var emailState by rememberSaveable { mutableStateOf("") }
+    var passwordState by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val icon = if (passwordVisibility)
         painterResource(id = R.drawable.ic_visibility)
@@ -85,6 +95,25 @@ fun LoginScreen(
                 }
             }
         }
+
+    when (loginState) {
+        is LoadState.Loading -> {
+            LinearProgressBarCustom()
+        }
+        is LoadState.Failure -> {
+            Toast.makeText(
+                activity,
+                viewModel.stateErrorMessage,
+                Toast.LENGTH_LONG
+            ).show()
+            viewModel.onClear()
+        }
+        is LoadState.Success -> {
+            onNavigateHome()
+            viewModel.onClear()
+        }
+        is LoadState.InFlight -> {}
+    }
 
     Column(
         modifier = Modifier
@@ -124,7 +153,7 @@ fun LoginScreen(
             )
 
             OutlinedTextField(
-                value = username,
+                value = emailState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(whiteF5F5F5, RoundedCornerShape(normal)),
@@ -136,12 +165,16 @@ fun LoginScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    username = it
+                    emailState = it
                 },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password
+                    keyboardType = KeyboardType.Email
                 )
             )
+
+            if (!viewModel.isUserNameFilled) {
+                FieldRequired(R.string.username)
+            }
 
             Text(
                 text = stringResource(id = R.string.password),
@@ -154,7 +187,7 @@ fun LoginScreen(
             )
 
             OutlinedTextField(
-                value = password,
+                value = passwordState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(whiteF5F5F5, RoundedCornerShape(normal)),
@@ -168,7 +201,7 @@ fun LoginScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    password = it
+                    passwordState = it
                 },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -181,11 +214,14 @@ fun LoginScreen(
                     }
                 },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password
+                    keyboardType = KeyboardType.Password,
                 ),
                 visualTransformation = if (passwordVisibility) VisualTransformation.None
                 else PasswordVisualTransformation()
             )
+            if (!viewModel.isPasswordFilled) {
+                FieldRequired(R.string.password)
+            }
 
             Text(
                 text = stringResource(R.string.forgot_password), modifier = Modifier
@@ -198,7 +234,12 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    onNavigateHome()
+                    keyboardController?.hide()
+
+                    viewModel.signManual(
+                        email = emailState,
+                        password = passwordState
+                    )
                 },
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(backgroundColor = gray4B4747),
@@ -254,6 +295,7 @@ fun LoginScreen(
                         fontWeight = FontWeight.Bold
                     ),
                     onClick = {
+                        viewModel.onClear()
                         onNavigateRegister()
                     })
             }

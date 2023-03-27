@@ -1,5 +1,6 @@
 package com.imdb.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,26 +8,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.imdb.R
+import com.imdb.common.helper.LoadState
+import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.yellowF6C700
-import kotlinx.coroutines.delay
+import com.imdb.viewmodel.SplashViewModel
 
 @Composable
-fun SplashScreen(onNavigate: () -> Unit) {
+fun SplashScreen(
+    onNavigateLogin: () -> Unit,
+    onNavigateDashBoard: () -> Unit,
+    viewModel: SplashViewModel
+) {
+    val localContext = LocalContext.current
+    val loginState by viewModel.loginState.collectAsState()
+
+    when (loginState) {
+        is LoadState.Loading -> LinearProgressBarCustom()
+        is LoadState.Failure -> {
+            Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
+            onNavigateLogin()
+            viewModel.onClear()
+        }
+        is LoadState.Success -> {
+            onNavigateDashBoard()
+            viewModel.onClear()
+        }
+        is LoadState.InFlight -> {}
+    }
 
     Splash()
-
-    LaunchedEffect(key1 = true) {
-        delay(100)
-        onNavigate()
-    }
 }
 
 @Composable

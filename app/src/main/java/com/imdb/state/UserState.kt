@@ -1,6 +1,6 @@
 package com.imdb.state
 
-data class RegisterState(
+data class UserState(
     var id: String = "",
     var email: String = "",
     var password: String = "",

@@ -1,37 +1,27 @@
 package com.imdb.common.helper
 
-import com.imdb.common.Constants.INTERNET_CONNECTION
-
-open class ErrorFactory(private val errorCode: Int = 100) : CustomError() {
-
-    private val httpStatusCode =
+open class ErrorFactory(errorCode: Int) : ErrorData {
+    private val error =
         HttpStatusCode.values().firstOrNull { statusCode -> statusCode.code == errorCode }
             ?: HttpStatusCode.Unknown
 
-    override fun toString(): String {
-        return if (errorCode == HttpStatusCode.InternetConnection.code) {
-            INTERNET_CONNECTION
-        } else {
-            "ErrorLoadData" +
-                    "\ncode: $errorCode (${httpStatusCode.name})" +
-                    "\nmessage: ${super.message}"
-        }
-    }
+    override val message: String = error.name
+    override val code:Int = errorCode
 }
 
-open class CustomError : Error() {
-
-    override fun toString(): String {
-        return "CustomError(message: $message)"
-    }
+interface ErrorData{
+    val code:Int
+    val message:String
 }
-
 enum class HttpStatusCode(val code: Int) {
-
     // Custom Error
     Unknown(101),
-    InternetConnection(102),
-    UserExist(103),
+    NoInternetConnection(102),
+    TheUserAlreadyExists(103),
+    IncorrectUserOrPassword(104),
+    UserWithoutSession(105),
+    SessionHasExpired(106),
+    NoActiveSession(107),
 
     // Client Errors
     BadRequest(400),

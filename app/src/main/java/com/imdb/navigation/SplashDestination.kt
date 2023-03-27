@@ -13,12 +13,19 @@ object SplashDestination : DestinationNav {
     override val destination: String = "splash_destination"
 }
 
-fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController) {
+fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController, popUpTo:(String, String) -> Unit) {
 
     composable(route = SplashDestination.route) {
-        SplashScreen(onNavigate = {
-            navController.popBackStack()
-            navController.navigate(LoginDestination.route) }
+        SplashScreen(
+            onNavigateLogin = {
+                navController.navigate(LoginDestination.route) {
+                    popUpTo(SplashDestination.route) { inclusive = true }
+                }
+            },
+            onNavigateDashBoard = {
+                popUpTo(SplashDestination.route, DashBoardDestination.route)
+            },
+            viewModel = hiltViewModel()
         )
     }
 
@@ -26,8 +33,9 @@ fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController
         LoginScreen(
             activity = activity,
             onNavigateHome = {
-                navController.popBackStack()
-                navController.navigate(DashBoardDestination.route)
+                navController.navigate(DashBoardDestination.route) {
+                    popUpTo(LoginDestination.route) { inclusive = true }
+                }
             },
             onNavigateRegister = {
                 navController.navigate(RegisterDestination.route)

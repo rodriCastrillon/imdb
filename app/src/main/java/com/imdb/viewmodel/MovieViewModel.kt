@@ -32,7 +32,7 @@ class MovieViewModel @Inject constructor(private val useCase: MovieUseCase) : Vi
         viewModelScope.launch {
             val newState = useCase.getTopRated()
                 .fold({
-                    stateErrorMessage = it.toString()
+                    stateErrorMessage = it.message
                     _movieState.value.asFailure()
                 }, { model ->
                     _movieState.value.asSuccess(model.map { it.toMovieState() })
