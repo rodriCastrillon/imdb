@@ -14,6 +14,6 @@ interface LoginQuery {
     @Query("SELECT * FROM user WHERE email = :email AND password = :password")
     fun selectByEmailAndPassword(email: String, password:String): UserEntity?
 
-    @Query("UPDATE user SET timeSession = :timeSession")
-    fun updateSession(timeSession: Date = Calendar.getInstance().time)
+    @Query("UPDATE user SET sessionTime = :sessionTime")
+    fun updateSession(sessionTime: Date = Calendar.getInstance().time)
 }

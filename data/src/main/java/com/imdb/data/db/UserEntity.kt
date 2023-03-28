@@ -17,5 +17,5 @@ data class UserEntity(
     val urlPhoto: String,
     val token: String,
     val isLogged: Boolean,
-    val timeSession: Date
+    val sessionTime: Date
 )

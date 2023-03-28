@@ -5,14 +5,15 @@ open class ErrorFactory(errorCode: Int) : ErrorData {
         HttpStatusCode.values().firstOrNull { statusCode -> statusCode.code == errorCode }
             ?: HttpStatusCode.Unknown
 
-    override val message: String = error.name
-    override val code:Int = errorCode
+    override val message: String = error.name.split("(?=\\p{Lu})".toRegex()).joinToString(" ").lowercase()
+    override val code: Int = errorCode
 }
 
-interface ErrorData{
-    val code:Int
-    val message:String
+interface ErrorData {
+    val code: Int
+    val message: String
 }
+
 enum class HttpStatusCode(val code: Int) {
     // Custom Error
     Unknown(101),

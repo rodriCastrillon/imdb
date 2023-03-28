@@ -26,5 +26,5 @@ fun RegisterModel.toRegisterEntity() = UserEntity(
     urlPhoto = urlPhoto,
     token = token,
     isLogged = isLogged,
-    timeSession = Date()
+    sessionTime = Date()
 )

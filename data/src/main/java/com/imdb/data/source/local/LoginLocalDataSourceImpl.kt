@@ -2,6 +2,7 @@ package com.imdb.data.source.local
 
 import com.imdb.core.helper.Either
 import com.imdb.core.helper.ErrorFactory
+import com.imdb.core.remoteConfig.RemoteConfig
 import com.imdb.data.db.LoginQuery
 import com.imdb.data.db.UserEntity
 import java.util.Calendar
@@ -45,11 +46,11 @@ class LoginLocalDataSourceImpl @Inject constructor(private val query: LoginQuery
                 response != null -> {
                     when {
                         response.isLogged -> {
-                            val timeSession =
-                                (Calendar.getInstance().timeInMillis - checkNotNull(response.timeSession.time))
+                            val sessionTime =
+                                (Calendar.getInstance().timeInMillis - checkNotNull(response.sessionTime.time))
                                     .milliseconds.inWholeMinutes
                             when {
-                                timeSession < 5 -> Either.Right(response)
+                                sessionTime < RemoteConfig.sessionTime -> Either.Right(response)
                                 else -> Either.Left(ErrorFactory(errorCode = 106))
                             }
                         }
