@@ -42,7 +42,6 @@ class SplashViewModel @Inject constructor(private val useCase: LoginUseCase) : V
                     _loginState.update { LoadState.Success(userSate) }
                 })
         }
-        onClear()
     }
 
     override fun onCleared() {
