@@ -159,7 +159,7 @@ fun RegisterScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    nameState = it
+                    nameState = it.trim()
                     registerState.apply { name = nameState }
                 },
                 keyboardOptions = KeyboardOptions(
@@ -194,7 +194,7 @@ fun RegisterScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    emailState = it
+                    emailState = it.trim()
                     registerState.apply { email = emailState }
                 },
                 keyboardOptions = KeyboardOptions(
@@ -231,7 +231,7 @@ fun RegisterScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    passwordState = it
+                    passwordState = it.trim()
                     registerState.apply { password = passwordState }
                 },
                 trailingIcon = {

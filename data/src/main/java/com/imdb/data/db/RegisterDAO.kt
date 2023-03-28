@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 
 @Dao
-interface RegisterQuery {
+interface RegisterDAO {
     @Transaction
     suspend fun transaction(entity: UserEntity) {
         delete()

@@ -3,7 +3,7 @@ package com.imdb.data.source.local
 import com.imdb.core.helper.Either
 import com.imdb.core.helper.ErrorFactory
 import com.imdb.core.remoteConfig.RemoteConfig
-import com.imdb.data.db.LoginQuery
+import com.imdb.data.db.LoginDAO
 import com.imdb.data.db.UserEntity
 import java.util.Calendar
 import javax.inject.Inject
@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class LoginLocalDataSourceImpl @Inject constructor(private val query: LoginQuery) :
+class LoginLocalDataSourceImpl @Inject constructor(private val query: LoginDAO) :
     LoginLocalDataSource {
     override suspend fun login(
         email: String,

@@ -166,7 +166,7 @@ fun LoginScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    emailState = it
+                    emailState = it.trim()
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
@@ -202,7 +202,7 @@ fun LoginScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    passwordState = it
+                    passwordState = it.trim()
                 },
                 trailingIcon = {
                     IconButton(onClick = {

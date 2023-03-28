@@ -1,5 +1,6 @@
 package com.imdb.viewmodel
 
+import androidx.annotation.OpenForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,13 +17,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@OpenForTesting
 @HiltViewModel
 class MovieViewModel @Inject constructor(
     private val useCase: MovieUseCase
 ) : ViewModel() {
 
     var stateErrorMessage by mutableStateOf("")
-
+        private set
     private val _movieState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
     val movieState = _movieState.asStateFlow()
 
