@@ -1,5 +1,6 @@
 package com.imdb.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -32,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.imdb.R
-import com.imdb.common.extensionFunctions.toYYYY
+import com.imdb.core.extensionFunctions.toYYYY
 import com.imdb.state.MovieState
 import com.imdb.state.UserState
 import com.imdb.ui.components.LinearProgressBarCustom
@@ -47,7 +49,8 @@ import com.imdb.ui.theme.whiteF5F5F5
 import com.imdb.viewmodel.MovieViewModel
 
 @Composable
-fun DashBoardScreen(userState: UserState = UserState(), viewModel: MovieViewModel = hiltViewModel()) {
+fun DashBoardScreen(userState: UserState, viewModel: MovieViewModel = hiltViewModel()) {
+    val localContext = LocalContext.current
     val movieState by viewModel.movieState.collectAsState()
     val query = remember { mutableStateOf(TextFieldValue("")) }
 
@@ -82,6 +85,11 @@ fun DashBoardScreen(userState: UserState = UserState(), viewModel: MovieViewMode
                     }
                 }
             }
+            Toast.makeText(
+                localContext,
+                stringResource(id = R.string.welcome_user, userState.name),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 }

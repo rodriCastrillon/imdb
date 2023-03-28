@@ -1,7 +1,7 @@
 package com.imdb.data.di
 
-import com.imdb.common.Constants.API_KEY
-import com.imdb.common.Constants.BASE_URL
+import com.imdb.core.Constants.API_KEY
+import com.imdb.core.Constants.BASE_URL
 import com.imdb.data.network.MovieService
 import com.imdb.data.source.remote.MovieRemoteDataSource
 import com.imdb.data.source.remote.MovieRemoteDataSourceImpl

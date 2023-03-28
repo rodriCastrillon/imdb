@@ -1,7 +1,7 @@
 package com.imdb.domain.repository
 
-import com.imdb.common.helper.Either
-import com.imdb.common.helper.ErrorFactory
+import com.imdb.core.helper.Either
+import com.imdb.core.helper.ErrorFactory
 import com.imdb.data.source.local.LoginLocalDataSource
 import com.imdb.domain.mapper.toRegisterModel
 import com.imdb.domain.model.RegisterModel
@@ -23,10 +23,10 @@ class LoginRepositoryImpl @Inject constructor(private val localDataSource: Login
 
         }
 
-    override suspend fun isLogged(): Either<ErrorFactory, Boolean> =
+    override suspend fun isLogged(): Either<ErrorFactory, RegisterModel> =
         when (val response = localDataSource.isLogged()) {
             is Either.Right -> {
-                Either.Right(response.r)
+                Either.Right(response.r.toRegisterModel())
             }
             is Either.Left -> {
                 Either.Left(response.l)

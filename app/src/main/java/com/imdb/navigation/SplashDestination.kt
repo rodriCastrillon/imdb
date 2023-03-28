@@ -23,6 +23,7 @@ fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController
                 }
             },
             onNavigateDashBoard = {
+                DashBoardDestination.userState = it
                 popUpTo(SplashDestination.route, DashBoardDestination.route)
             },
             viewModel = hiltViewModel()
@@ -33,6 +34,7 @@ fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController
         LoginScreen(
             activity = activity,
             onNavigateHome = {
+                DashBoardDestination.userState = it
                 navController.navigate(DashBoardDestination.route) {
                     popUpTo(LoginDestination.route) { inclusive = true }
                 }

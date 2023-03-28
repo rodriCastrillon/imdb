@@ -17,7 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.imdb.R
-import com.imdb.common.helper.LoadState
+import com.imdb.core.helper.LoadState
+import com.imdb.state.UserState
 import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.theme.black000000
 import com.imdb.ui.theme.yellowF6C700
@@ -26,7 +27,7 @@ import com.imdb.viewmodel.SplashViewModel
 @Composable
 fun SplashScreen(
     onNavigateLogin: () -> Unit,
-    onNavigateDashBoard: () -> Unit,
+    onNavigateDashBoard: (UserState) -> Unit,
     viewModel: SplashViewModel
 ) {
     val localContext = LocalContext.current
@@ -35,12 +36,14 @@ fun SplashScreen(
     when (loginState) {
         is LoadState.Loading -> LinearProgressBarCustom()
         is LoadState.Failure -> {
-            Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
+            if(viewModel.stateErrorMessage.isNotEmpty()){
+                Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
+            }
             onNavigateLogin()
             viewModel.onClear()
         }
         is LoadState.Success -> {
-            onNavigateDashBoard()
+            onNavigateDashBoard(viewModel.userSate)
             viewModel.onClear()
         }
         is LoadState.InFlight -> {}

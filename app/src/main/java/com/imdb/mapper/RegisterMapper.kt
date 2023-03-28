@@ -39,3 +39,16 @@ fun RegisterState.toUserState() = UserState(
     token = token,
     isLogged = true
 )
+
+fun RegisterModel.toUserState() = UserState(
+    id = id,
+    email = email,
+    password = password,
+    name = name,
+    lastname = lastname,
+    provider = provider,
+    urlPhoto = urlPhoto,
+    token = token,
+    isLogged = true
+)
+

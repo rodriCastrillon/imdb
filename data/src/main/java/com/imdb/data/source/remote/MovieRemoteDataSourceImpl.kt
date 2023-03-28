@@ -1,7 +1,7 @@
 package com.imdb.data.source.remote
 
-import com.imdb.common.helper.Either
-import com.imdb.common.helper.ErrorFactory
+import com.imdb.core.helper.Either
+import com.imdb.core.helper.ErrorFactory
 import com.imdb.data.network.MovieService
 import com.imdb.data.response.MovieResponse
 import javax.inject.Inject

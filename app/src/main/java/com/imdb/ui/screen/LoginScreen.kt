@@ -51,7 +51,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.imdb.R
-import com.imdb.common.helper.LoadState
+import com.imdb.core.helper.LoadState
+import com.imdb.state.UserState
 import com.imdb.ui.components.FieldRequired
 import com.imdb.ui.components.LinearProgressBarCustom
 import com.imdb.ui.theme.black000000
@@ -69,7 +70,7 @@ import com.imdb.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     activity: Activity,
-    onNavigateHome: () -> Unit,
+    onNavigateHome: (UserState) -> Unit,
     onNavigateRegister: () -> Unit,
     viewModel: LoginViewModel
 ) {
@@ -109,7 +110,7 @@ fun LoginScreen(
             viewModel.onClear()
         }
         is LoadState.Success -> {
-            onNavigateHome()
+            onNavigateHome(viewModel.userSate)
             viewModel.onClear()
         }
         is LoadState.InFlight -> {}

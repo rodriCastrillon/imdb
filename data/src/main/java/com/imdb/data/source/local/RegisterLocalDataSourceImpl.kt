@@ -1,9 +1,9 @@
 package com.imdb.data.source.local
 
-import com.imdb.common.helper.Either
-import com.imdb.common.helper.ErrorFactory
-import com.imdb.data.db.UserEntity
+import com.imdb.core.helper.Either
+import com.imdb.core.helper.ErrorFactory
 import com.imdb.data.db.RegisterQuery
+import com.imdb.data.db.UserEntity
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
