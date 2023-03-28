@@ -159,7 +159,7 @@ fun RegisterScreen(
                 maxLines = 1,
                 singleLine = true,
                 onValueChange = {
-                    nameState = it.trim()
+                    nameState = it
                     registerState.apply { name = nameState }
                 },
                 keyboardOptions = KeyboardOptions(
