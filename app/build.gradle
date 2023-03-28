@@ -7,17 +7,18 @@ plugins {
 }
 
 android {
-    namespace 'com.imdb'
-    compileSdk 33
+    namespace App.nameSpace
+    compileSdk App.compileSdk
 
     defaultConfig {
         applicationId "com.imdb"
-        minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        minSdk = App.minSdk
+        targetSdk = App.targetSdk
+        versionCode = App.versionCode
+        versionName = App.versionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.imdb.ImdbTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -34,7 +35,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = App.jvmTarget
     }
     buildFeatures {
         compose true
@@ -50,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.ar:core:1.30.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
@@ -65,13 +67,13 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
-
-
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
-    
-    androidTestImplementation "com.google.dagger:hilt-android-testing:1.0.0-beta04"
-    kaptAndroidTest "com.google.dagger:hilt-android-compiler:1.0.0-beta04"
+    testImplementation 'com.google.dagger:hilt-android-testing:2.44'
+    kaptTest 'com.google.dagger:hilt-android-compiler:2.44.2'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.44'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.44.2'
+
 
     // Hilt
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -80,7 +82,7 @@ dependencies {
 
     // Implement modules
     implementation project(path: ':domain')
-    implementation project(path: ':common')
+    implementation project(path: ':core')
 
     //Load image
     implementation("io.coil-kt:coil-compose:2.2.2")

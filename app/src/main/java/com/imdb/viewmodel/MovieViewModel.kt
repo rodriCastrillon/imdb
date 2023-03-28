@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.imdb.common.helper.LoadingViewState
+import com.imdb.core.helper.LoadingViewState
 import com.imdb.domain.usecase.MovieUseCase
 import com.imdb.mapper.toMovieState
 import com.imdb.state.MovieState
@@ -17,7 +17,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val useCase: MovieUseCase) : ViewModel() {
+class MovieViewModel @Inject constructor(
+    private val useCase: MovieUseCase
+) : ViewModel() {
 
     var stateErrorMessage by mutableStateOf("")
 

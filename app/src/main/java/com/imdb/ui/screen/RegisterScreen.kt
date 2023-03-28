@@ -45,8 +45,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.imdb.R
-import com.imdb.common.extensionFunctions.toHashSha1
-import com.imdb.common.helper.LoadState
+import com.imdb.core.helper.LoadState
+import com.imdb.state.UserState
 import com.imdb.ui.components.BackArrow
 import com.imdb.ui.components.FieldRequired
 import com.imdb.ui.components.LinearProgressBarCustom
@@ -63,7 +63,11 @@ import com.imdb.viewmodel.RegisterViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
+fun RegisterScreen(
+    onBack: () -> Unit,
+    onNavigateDashBoard: (UserState) -> Unit,
+    viewModel: RegisterViewModel
+) {
     val registerState by viewModel.registerState.collectAsState()
     val resultState = viewModel.resultState.collectAsState().value
     var nameState by rememberSaveable { mutableStateOf("") }
@@ -228,7 +232,7 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
                 singleLine = true,
                 onValueChange = {
                     passwordState = it
-                    registerState.apply { password = (emailState.plus(passwordState)).toHashSha1() }
+                    registerState.apply { password = passwordState }
                 },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -290,13 +294,14 @@ fun RegisterScreen(onBack: () -> Unit, viewModel: RegisterViewModel) {
     when (resultState) {
         is LoadState.Failure -> {
             Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
+            viewModel.onClear()
         }
         is LoadState.Loading -> {
             LinearProgressBarCustom()
         }
         is LoadState.Success -> {
-            Toast.makeText(localContext, R.string.registered, Toast.LENGTH_LONG).show()
-            onBack()
+            onNavigateDashBoard(viewModel.userSate)
+            viewModel.onClear()
         }
         LoadState.InFlight -> {}
     }

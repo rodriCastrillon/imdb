@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.imdb.common.helper.LoadState
+import com.imdb.core.extensionFunctions.toHashSha1
+import com.imdb.core.helper.LoadState
+import com.imdb.core.helper.LoginProvider
 import com.imdb.domain.usecase.RegisterUseCase
-import com.imdb.common.helper.LoginProvider
 import com.imdb.mapper.toRegisterModel
+import com.imdb.mapper.toUserState
 import com.imdb.state.RegisterState
+import com.imdb.state.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -20,7 +23,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase) : ViewModel() {
-
+    var userSate by mutableStateOf(UserState())
     var stateErrorMessage by mutableStateOf("")
     var validatedPassword by mutableStateOf(true)
 
@@ -33,6 +36,7 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
 
     private val _resultState = MutableStateFlow<LoadState<Boolean>>(LoadState.InFlight)
     val resultState = _resultState.asStateFlow()
+    fun onClear() = onCleared()
 
     fun register() {
         isNameFilled = registerState.value.email.isNotEmpty()
@@ -47,6 +51,7 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
                     viewModelScope.launch {
                         val state = registerState.value.copy(
                             id = UUID.randomUUID().toString(),
+                            password = (registerState.value.email.plus(registerState.value.password)).toHashSha1(),
                             provider = LoginProvider.Manual.name,
                             isLogged = true
                         ).toRegisterModel()
@@ -56,6 +61,7 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
                                 stateErrorMessage = it.message
                                 _resultState.update { LoadState.Failure }
                             }, { result ->
+                                userSate = registerState.value.toUserState()
                                 _resultState.update { LoadState.Success(result) }
                             })
                     }
@@ -79,4 +85,9 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
                 hasDigits && hasUppercase && hasLowercase && hasSpecialCharacters && hasMinLength
             }
         }
+
+    override fun onCleared() {
+        super.onCleared()
+        _resultState.update { LoadState.InFlight }
+    }
 }

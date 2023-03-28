@@ -1,7 +1,7 @@
 package com.imdb.data.source.local
 
-import com.imdb.common.helper.Either
-import com.imdb.common.helper.ErrorFactory
+import com.imdb.core.helper.Either
+import com.imdb.core.helper.ErrorFactory
 import com.imdb.data.db.LoginQuery
 import com.imdb.data.db.UserEntity
 import java.util.Calendar
@@ -37,7 +37,7 @@ class LoginLocalDataSourceImpl @Inject constructor(private val query: LoginQuery
             Either.Left(ErrorFactory(errorCode = exception.hashCode()))
         }
 
-    override suspend fun isLogged(): Either<ErrorFactory, Boolean> =
+    override suspend fun isLogged(): Either<ErrorFactory, UserEntity> =
         try {
             val response = withContext(Dispatchers.IO) { query.select() }
 
@@ -49,7 +49,7 @@ class LoginLocalDataSourceImpl @Inject constructor(private val query: LoginQuery
                                 (Calendar.getInstance().timeInMillis - checkNotNull(response.timeSession.time))
                                     .milliseconds.inWholeMinutes
                             when {
-                                timeSession < 5 -> Either.Right(true)
+                                timeSession < 5 -> Either.Right(response)
                                 else -> Either.Left(ErrorFactory(errorCode = 106))
                             }
                         }

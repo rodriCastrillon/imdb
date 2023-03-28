@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.imdb.common.extensionFunctions.timeStampExample
-import com.imdb.common.helper.LoadState
+import com.imdb.core.helper.HttpStatusCode
+import com.imdb.core.helper.LoadState
 import com.imdb.domain.usecase.LoginUseCase
+import com.imdb.mapper.toUserState
+import com.imdb.state.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +19,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(private val useCase: LoginUseCase) : ViewModel() {
+    var userSate by mutableStateOf(UserState())
     var stateErrorMessage by mutableStateOf("")
-    private val _loginState = MutableStateFlow<LoadState<Boolean>>(LoadState.InFlight)
+    private val _loginState = MutableStateFlow<LoadState<UserState>>(LoadState.InFlight)
     val loginState = _loginState.asStateFlow()
     fun onClear() = onCleared()
 
@@ -30,10 +33,13 @@ class SplashViewModel @Inject constructor(private val useCase: LoginUseCase) : V
         viewModelScope.launch {
             useCase.isLogged()
                 .fold({
-                    stateErrorMessage = it.message
+                    if (it.code != HttpStatusCode.UserWithoutSession.code) {
+                        stateErrorMessage = it.message
+                    }
                     _loginState.update { LoadState.Failure }
                 }, { result ->
-                    _loginState.update { LoadState.Success(result) }
+                    userSate = result.toUserState()
+                    _loginState.update { LoadState.Success(userSate) }
                 })
         }
         onClear()

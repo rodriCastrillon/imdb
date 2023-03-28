@@ -10,13 +10,14 @@ object App {
 }
 
 object Versions {
-
+    const val hilt    = "2.44.2"
 }
 
 object Libraries {
 
     object Android {
-
+        const val hilt                  = "com.google.dagger:hilt-android:2.44.2"
+        const val kapt                  = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
     }
 
     object Compose {

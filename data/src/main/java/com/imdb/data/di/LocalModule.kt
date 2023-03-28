@@ -2,7 +2,7 @@ package com.imdb.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.imdb.common.Constants.DATABASE_NAME
+import com.imdb.core.Constants.DATABASE_NAME
 import com.imdb.data.db.LoginQuery
 import com.imdb.data.db.MovieDataBase
 import com.imdb.data.db.MovieQuery

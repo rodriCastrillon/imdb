@@ -1,6 +1,6 @@
 package com.imdb.domain.mapper
 
-import com.imdb.common.Constants.BASE_URL_MAGE
+import com.imdb.core.Constants.BASE_URL_MAGE
 import com.imdb.data.db.MovieEntity
 import com.imdb.data.response.MovieDetailResponse
 import com.imdb.domain.model.MovieModel

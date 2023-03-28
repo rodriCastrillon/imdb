@@ -1,8 +1,8 @@
 package com.imdb.domain.repository
 
-import com.imdb.common.helper.Either
-import com.imdb.common.helper.ErrorFactory
-import com.imdb.common.helper.NetworkMonitor
+import com.imdb.core.helper.Either
+import com.imdb.core.helper.ErrorFactory
+import com.imdb.core.helper.NetworkMonitor
 import com.imdb.data.source.local.MovieLocalDataSource
 import com.imdb.data.source.remote.MovieRemoteDataSource
 import com.imdb.domain.mapper.toMovieEntity

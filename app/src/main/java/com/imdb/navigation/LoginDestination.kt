@@ -21,21 +21,24 @@ object RegisterDestination : DestinationNav {
 object DashBoardDestination : DestinationNav {
     override val route = "dashboard_route"
     override val destination = "dashboard_destination"
-    const val userState = ""
+    var userState = UserState()
 }
 
-fun NavGraphBuilder.loginGraph(navController: NavController, onBack: () -> Unit) {
+fun NavGraphBuilder.loginGraph(navController: NavController, onBack: () -> Unit, popUpTo:(String, String) -> Unit) {
     composable(route = RegisterDestination.route) {
         RegisterScreen(
+            onNavigateDashBoard = {
+                DashBoardDestination.userState = it
+                popUpTo(LoginDestination.route, DashBoardDestination.route)
+            },
             onBack = { onBack() },
             viewModel = hiltViewModel()
         )
     }
 
-    composable(route = "${DashBoardDestination.route}/{${DashBoardDestination.userState}}") {
-        val userState = checkNotNull(it.arguments?.getBundle(DashBoardDestination.userState))
+    composable(route = DashBoardDestination.route) {
         DashBoardScreen(
-            userState = UserState(),
+            userState = DashBoardDestination.userState,
             viewModel = hiltViewModel()
         )
     }

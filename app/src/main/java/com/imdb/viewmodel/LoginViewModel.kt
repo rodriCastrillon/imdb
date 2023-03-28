@@ -15,14 +15,16 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.imdb.R
-import com.imdb.common.extensionFunctions.toHashSha1
-import com.imdb.common.helper.LoadState
+import com.imdb.core.extensionFunctions.toHashSha1
+import com.imdb.core.helper.LoadState
+import com.imdb.core.helper.LoginProvider
 import com.imdb.domain.usecase.LoginUseCase
 import com.imdb.domain.usecase.RegisterUseCase
-import com.imdb.common.helper.LoginProvider
 import com.imdb.mapper.toRegisterModel
 import com.imdb.mapper.toRegisterState
+import com.imdb.mapper.toUserState
 import com.imdb.state.RegisterState
+import com.imdb.state.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,11 +40,11 @@ class LoginViewModel @Inject constructor(
     var stateErrorMessage by mutableStateOf("")
     private val _loginState = MutableStateFlow<LoadState<RegisterState>>(LoadState.InFlight)
     val loginState = _loginState.asStateFlow()
+    var userSate by mutableStateOf(UserState())
 
     var isUserNameFilled by mutableStateOf(true)
     var isPasswordFilled by mutableStateOf(true)
     fun onClear() = onCleared()
-
     fun handleSignInResult(task: Task<GoogleSignInAccount>) {
         try {
             val account = task.getResult(ApiException::class.java)
@@ -93,6 +95,7 @@ class LoginViewModel @Inject constructor(
                     stateErrorMessage = it.message
                     _loginState.update { LoadState.Failure }
                 }, {
+                    userSate = registerState.toUserState()
                     _loginState.update { LoadState.Success(registerState) }
                 })
         }
@@ -105,11 +108,15 @@ class LoginViewModel @Inject constructor(
         when {
             isUserNameFilled && isPasswordFilled -> {
                 viewModelScope.launch {
-                    loginUseCase.login(email = email, password = (email.plus(password).toHashSha1()))
+                    loginUseCase.login(
+                        email = email,
+                        password = (email.plus(password).toHashSha1())
+                    )
                         .fold({
                             stateErrorMessage = it.message
                             _loginState.update { LoadState.Failure }
                         }, { result ->
+                            userSate = result.toUserState()
                             _loginState.update { LoadState.Success(result.toRegisterState()) }
                         })
                 }

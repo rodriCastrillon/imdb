@@ -1,6 +1,6 @@
 package com.imdb.data.source.remote
 
-import com.imdb.common.helper.Either
+import com.imdb.core.helper.Either
 import com.imdb.data.network.MovieService
 import com.imdb.data.source.mapper.toEiterRight
 import com.imdb.data.source.network.enqueueResponse
