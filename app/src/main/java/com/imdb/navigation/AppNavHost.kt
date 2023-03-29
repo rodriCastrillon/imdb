@@ -20,13 +20,12 @@ fun AppNavHost(
                 navController.navigate(destination) { popUpTo(origin) { inclusive = true } }
             })
 
-        loginGraph(navController = navController,
-            onBack = {
-                navController.popBackStack(LoginDestination.route, false)
-            },
-            popUpTo = { origin, destination ->
-                navController.navigate(destination) { popUpTo(origin) { inclusive = true } }
-            })
+        loginGraph(onBack = {
+            navController.popBackStack(LoginDestination.route, false)
+        }
+        ) { origin, destination ->
+            navController.navigate(destination) { popUpTo(origin) { inclusive = true } }
+        }
 
     }
 }
