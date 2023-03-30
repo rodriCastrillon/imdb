@@ -4,8 +4,12 @@ import app.cash.turbine.test
 import com.imdb.core.helper.Either
 import com.imdb.core.helper.ErrorFactory
 import com.imdb.core.helper.LoadState
+import com.imdb.domain.repository.LoginRepository
+import com.imdb.domain.repository.RegisterRepository
 import com.imdb.domain.usecase.LoginUseCase
+import com.imdb.domain.usecase.LoginUseCaseImpl
 import com.imdb.domain.usecase.RegisterUseCase
+import com.imdb.domain.usecase.RegisterUseCaseImpl
 import com.imdb.ui.dummy.getUser
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -14,10 +18,12 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
 
 /**
  * Test class [LoginViewModel]
@@ -25,34 +31,56 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class LoginViewModelTest {
     private lateinit var viewModel: LoginViewModel
+
+    @Mock
     private lateinit var loginUseCase: LoginUseCase
+
+    @Mock
+    private lateinit var loginRepository: LoginRepository
+
+    @Mock
     private lateinit var registerUseCase: RegisterUseCase
+
+    @Mock
+    private lateinit var registerRepository: RegisterRepository
 
     @Before
     fun setUp() {
-        loginUseCase = mockk()
-        registerUseCase = mockk()
+        loginRepository = mockk()
+        registerRepository = mockk()
     }
 
     @Test
     fun whenUserSignWithUserNameAndEmailSuccess() = runTest {
         // Given
-        val registerModel = getUser()
         val username = "test@gmail.com"
         val password = "12345"
+
+        runBlocking {
+            val user = getUser()
+            coEvery { loginRepository.login("test@gmail.com", "1234") } returns Either.Right(user)
+        }
+
         //When
-        coEvery { loginUseCase.login(username, password) } returns Either.Right(registerModel)
+        loginUseCase = LoginUseCaseImpl(loginRepository)
+        registerUseCase = RegisterUseCaseImpl(registerRepository)
         viewModel = LoginViewModel(loginUseCase = loginUseCase, registerUseCase = registerUseCase)
 
-        every { viewModel.signManual(email = username, password = password) } just Runs
+        //every { viewModel.signManual(email = username, password = password) } just Runs
 
         //Verify
         viewModel.loginState.test {
             assert(awaitItem() is LoadState.InFlight)
+            viewModel.signManual(email = username, password = password)
             assert(awaitItem() is LoadState.Success)
-            cancelAndConsumeRemainingEvents()
+            //cancelAndConsumeRemainingEvents()
         }
-        coVerify(exactly = 1) { loginUseCase.isLogged() }
+        coVerify(exactly = 1) {
+            loginUseCase.isLogged()
+        }
+        coVerify(exactly = 1) {
+            viewModel.signManual(email = username, password = password)
+        }
     }
 
     @Test
