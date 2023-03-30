@@ -38,12 +38,17 @@ class LoginViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
     var stateErrorMessage by mutableStateOf("")
-    private val _loginState = MutableStateFlow<LoadState<RegisterState>>(LoadState.InFlight)
-    val loginState = _loginState.asStateFlow()
+        private set
     var userSate by mutableStateOf(UserState())
 
+    private val _loginState = MutableStateFlow<LoadState<RegisterState>>(LoadState.InFlight)
+    val loginState = _loginState.asStateFlow()
+
     var isUserNameFilled by mutableStateOf(true)
+        private set
     var isPasswordFilled by mutableStateOf(true)
+        private set
+
     fun onClear() = onCleared()
     fun handleSignInResult(task: Task<GoogleSignInAccount>) {
         try {

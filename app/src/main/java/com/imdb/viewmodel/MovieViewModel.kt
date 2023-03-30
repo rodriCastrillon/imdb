@@ -22,7 +22,7 @@ class MovieViewModel @Inject constructor(
 ) : ViewModel() {
 
     var stateErrorMessage by mutableStateOf("")
-
+        private set
     private val _movieState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
     val movieState = _movieState.asStateFlow()
 

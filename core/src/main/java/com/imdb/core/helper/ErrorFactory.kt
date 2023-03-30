@@ -5,7 +5,7 @@ open class ErrorFactory(errorCode: Int) : ErrorData {
         HttpStatusCode.values().firstOrNull { statusCode -> statusCode.code == errorCode }
             ?: HttpStatusCode.Unknown
 
-    override val message: String = error.name.split("(?=\\p{Lu})".toRegex()).joinToString(" ").lowercase()
+    override val message: String = (error.name.split("(?=\\p{Lu})".toRegex()).joinToString(" ").lowercase()).trim()
     override val code: Int = errorCode
 }
 
@@ -42,5 +42,5 @@ enum class HttpStatusCode(val code: Int) {
     InsufficientStorage(507),
     LoopDetected(508),
     NotExtended(510),
-    NetworkAuthenticationRequired(511);
+    NetworkAuthenticationRequired(511)
 }

@@ -25,11 +25,15 @@ import kotlinx.coroutines.launch
 class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase) : ViewModel() {
     var userSate by mutableStateOf(UserState())
     var stateErrorMessage by mutableStateOf("")
+        private set
     var validatedPassword by mutableStateOf(true)
-
+        private set
     var isNameFilled by mutableStateOf(true)
+        private set
     var isEmailFilled by mutableStateOf(true)
+        private set
     var isPasswordFilled by mutableStateOf(true)
+        private set
 
     private val _registerState = MutableStateFlow(RegisterState())
     val registerState = _registerState.asStateFlow()

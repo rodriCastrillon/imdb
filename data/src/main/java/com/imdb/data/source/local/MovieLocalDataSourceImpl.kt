@@ -2,13 +2,13 @@ package com.imdb.data.source.local
 
 import com.imdb.core.helper.Either
 import com.imdb.core.helper.ErrorFactory
+import com.imdb.data.db.MovieDAO
 import com.imdb.data.db.MovieEntity
-import com.imdb.data.db.MovieQuery
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MovieLocalDataSourceImpl @Inject constructor(private val query: MovieQuery) :
+class MovieLocalDataSourceImpl @Inject constructor(private val query: MovieDAO) :
     MovieLocalDataSource {
     override suspend fun getTopRated(): Either<ErrorFactory, List<MovieEntity>> =
         try {

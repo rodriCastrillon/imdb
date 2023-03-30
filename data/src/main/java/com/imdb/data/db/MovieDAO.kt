@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 
 @Dao
-interface MovieQuery {
+interface MovieDAO {
     @Transaction
     suspend fun transaction(entity: List<MovieEntity>) {
         delete()

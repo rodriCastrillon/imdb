@@ -6,7 +6,7 @@ import java.util.Calendar
 import java.util.Date
 
 @Dao
-interface LoginQuery {
+interface LoginDAO {
 
     @Query("SELECT * FROM user")
     fun select(): UserEntity?
