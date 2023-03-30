@@ -6,7 +6,6 @@ import com.imdb.core.helper.ErrorFactory
 import com.imdb.core.helper.LoadState
 import com.imdb.domain.usecase.LoginUseCase
 import com.imdb.ui.dummy.getUser
-import com.imdb.viewmodel.SplashViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
