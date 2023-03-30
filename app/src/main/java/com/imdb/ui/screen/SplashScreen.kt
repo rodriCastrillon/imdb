@@ -40,11 +40,11 @@ fun SplashScreen(
                 Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
             }
             onNavigateLogin()
-            viewModel.onClear()
+            viewModel.onClear
         }
         is LoadState.Success -> {
             onNavigateDashBoard(viewModel.userSate)
-            viewModel.onClear()
+            viewModel.onClear
         }
         is LoadState.InFlight -> {}
     }

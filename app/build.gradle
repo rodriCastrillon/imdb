@@ -66,6 +66,7 @@ dependencies {
     // Test UI
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.44.2'
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.44'
     androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
@@ -74,9 +75,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
     implementation "io.mockk:mockk-android:1.13.2"
-
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("app.cash.turbine:turbine:0.12.1")
+    implementation("app.cash.turbine:turbine:0.12.1")
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
     // Hilt
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -88,7 +88,7 @@ dependencies {
     implementation project(path: ':core')
 
     //Load image
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:31.3.0')

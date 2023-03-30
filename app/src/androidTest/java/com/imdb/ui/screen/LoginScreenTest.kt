@@ -1,9 +1,10 @@
 package com.imdb.ui.screen
 
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.imdb.core.helper.Either
@@ -13,7 +14,6 @@ import com.imdb.domain.usecase.LoginUseCase
 import com.imdb.domain.usecase.LoginUseCaseImpl
 import com.imdb.domain.usecase.RegisterUseCase
 import com.imdb.domain.usecase.RegisterUseCaseImpl
-import com.imdb.ui.MainActivity
 import com.imdb.ui.dummy.getUser
 import com.imdb.viewmodel.LoginViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -38,7 +38,7 @@ class LoginScreenTest {
     var hiltTestRule = HiltAndroidRule(this)
 
     @get:Rule(order = 2)
-    var composeRule = createComposeRule()
+    var rule = createAndroidComposeRule<ComponentActivity>()
 
     private lateinit var viewModel: LoginViewModel
 
@@ -54,16 +54,12 @@ class LoginScreenTest {
     @Mock
     private lateinit var registerRepository: RegisterRepository
 
-    @Mock
-    private lateinit var activity: MainActivity
-
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
         hiltTestRule.inject()
         loginRepository = mockk()
         registerRepository = mockk()
-        activity = mockk()
 
         runBlocking {
             val user = getUser()
@@ -74,9 +70,9 @@ class LoginScreenTest {
         registerUseCase = RegisterUseCaseImpl(registerRepository)
         viewModel = LoginViewModel(loginUseCase = loginUseCase, registerUseCase = registerUseCase)
 
-        composeRule.setContent {
+        rule.setContent {
             LoginScreen(
-                activity = activity,
+                activity = rule.activity,
                 onNavigateHome = {},
                 onNavigateRegister = {},
                 viewModel = viewModel
@@ -86,7 +82,7 @@ class LoginScreenTest {
 
     @Test
     fun field_is_displayed() {
-        with(composeRule) {
+        with(rule) {
             onNodeWithText("Usuario").assertIsDisplayed()
             onNodeWithText("Contraseña").assertIsDisplayed()
             onNodeWithText("¿Olvidaste la contraseña?").assertIsDisplayed()
@@ -101,12 +97,12 @@ class LoginScreenTest {
     @Test
     fun validate_button_login() {
         val buttonLogin = hasText("Login") and hasClickAction()
-        composeRule.onNodeWithText("is required").assertDoesNotExist()
-        composeRule.onNode(buttonLogin).performClick()
+        rule.onNodeWithText("is required").assertDoesNotExist()
+        rule.onNode(buttonLogin).performClick()
     }
 
     @Test
     fun validate_button_register() {
-        composeRule.onNodeWithText("Registrate").performClick()
+        rule.onNodeWithText("Registrate").performClick()
     }
 }

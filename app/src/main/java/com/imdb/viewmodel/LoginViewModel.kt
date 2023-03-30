@@ -39,14 +39,15 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     var stateErrorMessage by mutableStateOf("")
         private set
-    private val _loginState = MutableStateFlow<LoadState<RegisterState>>(LoadState.InFlight)
-    val loginState = _loginState.asStateFlow()
     var userSate by mutableStateOf(UserState())
 
+    private val _loginState = MutableStateFlow<LoadState<RegisterState>>(LoadState.InFlight)
+    val loginState = _loginState.asStateFlow()
+
     var isUserNameFilled by mutableStateOf(true)
-        private set
+
     var isPasswordFilled by mutableStateOf(true)
-        private set
+
     fun onClear() = onCleared()
     fun handleSignInResult(task: Task<GoogleSignInAccount>) {
         try {
@@ -105,11 +106,8 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signManual(email: String, password: String) {
-        isUserNameFilled = email.isNotEmpty()
-        isPasswordFilled = password.isNotEmpty()
 
-        when {
-            isUserNameFilled && isPasswordFilled -> {
+
                 viewModelScope.launch {
                     loginUseCase.login(
                         email = email,
@@ -123,8 +121,7 @@ class LoginViewModel @Inject constructor(
                             _loginState.update { LoadState.Success(result.toRegisterState()) }
                         })
                 }
-            }
-        }
+
     }
 
     override fun onCleared() {

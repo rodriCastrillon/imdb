@@ -58,14 +58,13 @@ class MovieRepositoryTest {
         runBlocking {
             //Given
             val errorFactory = ErrorFactory(errorCode = 401)
-            val response = 401
             //When
             coEvery { remoteDataSource.getTopRated() } returns Either.Left(errorFactory)
             val result = repository.getTopRated()
 
             //Verify
             Assert.assertTrue(result is Either.Left)
-            Assert.assertEquals(response, (result as Either.Left).l.code)
+            Assert.assertEquals(401, (result as Either.Left).l.code)
 
             coVerify {
                 remoteDataSource.getTopRated()

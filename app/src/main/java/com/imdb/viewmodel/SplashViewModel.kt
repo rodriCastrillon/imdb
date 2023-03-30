@@ -19,11 +19,14 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(private val useCase: LoginUseCase) : ViewModel() {
-    var userSate by mutableStateOf(UserState())
     var stateErrorMessage by mutableStateOf("")
+
+    var userSate by mutableStateOf(UserState())
+
     private val _loginState = MutableStateFlow<LoadState<UserState>>(LoadState.InFlight)
     val loginState = _loginState.asStateFlow()
-    fun onClear() = onCleared()
+
+    val onClear = onCleared()
 
     init {
         isLogged()
