@@ -6,6 +6,7 @@ import com.imdb.core.helper.Either
 import com.imdb.core.helper.ErrorFactory
 import com.imdb.core.helper.LoadState
 import com.imdb.domain.usecase.LoginUseCase
+import com.imdb.domain.usecase.RegisterUseCase
 import com.imdb.ui.dummy.getUser
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,10 +24,12 @@ import org.junit.Test
 class LoginViewModelTest {
     private lateinit var viewModel: LoginViewModel
     private lateinit var loginUseCase: LoginUseCase
+    private lateinit var registerUseCase: RegisterUseCase
 
     @Before
     fun setUp() {
         loginUseCase = mockk()
+        registerUseCase = mockk()
         viewModel = LoginViewModel(loginUseCase = loginUseCase, registerUseCase = mockk())
     }
 
@@ -73,5 +76,21 @@ class LoginViewModelTest {
         Assert.assertEquals(errorFactory.message, "incorrect user or password")
 
         coVerify(exactly = 1) { loginUseCase.login(username, passwordHash)}
+    }
+
+    fun loginWithGoogle() = runTest {
+        // Given
+        val user = getUser()
+        //When
+        coEvery { registerUseCase.register(user) } returns Either.Right(true)
+        viewModel.handleSignInResult(mockk())
+
+        //Verify
+        viewModel.loginState.test {
+            assert(awaitItem() is LoadState.InFlight)
+            assert(awaitItem() is LoadState.Success)
+            cancelAndConsumeRemainingEvents()
+        }
+        coVerify(exactly = 1) { registerUseCase.register(user)}
     }
 }

@@ -38,6 +38,7 @@ fun SplashScreen(
         is LoadState.Failure -> {
             if(viewModel.stateErrorMessage.isNotEmpty()){
                 Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
+                viewModel.onClear
             }
             onNavigateLogin()
             viewModel.onClear
