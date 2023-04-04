@@ -26,7 +26,7 @@ class SplashViewModel @Inject constructor(private val useCase: LoginUseCase) : V
     private val _loginState = MutableStateFlow<LoadState<UserState>>(LoadState.InFlight)
     val loginState = _loginState.asStateFlow()
 
-    val onClear = onCleared()
+    fun onClear() = onCleared()
 
     init {
         isLogged()
@@ -49,6 +49,8 @@ class SplashViewModel @Inject constructor(private val useCase: LoginUseCase) : V
 
     override fun onCleared() {
         super.onCleared()
+        stateErrorMessage = ""
+
         _loginState.update { LoadState.InFlight }
     }
 }

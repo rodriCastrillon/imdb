@@ -1,5 +1,6 @@
 package com.imdb.ui.screen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,14 +39,13 @@ fun SplashScreen(
         is LoadState.Failure -> {
             if(viewModel.stateErrorMessage.isNotEmpty()){
                 Toast.makeText(localContext, viewModel.stateErrorMessage, Toast.LENGTH_LONG).show()
-                viewModel.onClear
             }
             onNavigateLogin()
-            viewModel.onClear
+            viewModel.onClear()
         }
         is LoadState.Success -> {
             onNavigateDashBoard(viewModel.userSate)
-            viewModel.onClear
+            viewModel.onClear()
         }
         is LoadState.InFlight -> {}
     }
