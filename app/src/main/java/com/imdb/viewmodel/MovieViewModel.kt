@@ -23,8 +23,15 @@ class MovieViewModel @Inject constructor(
 
     var stateErrorMessage by mutableStateOf("")
         private set
-    private val _movieState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
-    val movieState = _movieState.asStateFlow()
+
+    private val _topRatedState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
+    val topRatedState = _topRatedState.asStateFlow()
+
+    private val _popularState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
+    val popularStateState = _popularState.asStateFlow()
+
+    private val _latestState = MutableStateFlow(LoadingViewState<MovieState>(MovieState()))
+    val latestState = _latestState.asStateFlow()
 
     init {
         getTopRated()
@@ -35,11 +42,41 @@ class MovieViewModel @Inject constructor(
             val newState = useCase.getTopRated()
                 .fold({
                     stateErrorMessage = it.message
-                    _movieState.value.asFailure()
+                    _topRatedState.value.asFailure()
                 }, { model ->
-                    _movieState.value.asSuccess(model.map { it.toMovieState() })
+                    _topRatedState.value.asSuccess(model.map { it.toMovieState() })
                 })
-            _movieState.update { newState }
+            _topRatedState.update { newState }
+        }
+
+        getPopular()
+    }
+
+    private fun getPopular() {
+        viewModelScope.launch {
+            val newState = useCase.getPopular()
+                .fold({
+                    stateErrorMessage = it.message
+                    _popularState.value.asFailure()
+                }, { model ->
+                    _popularState.value.asSuccess(model.map { it.toMovieState() })
+                })
+            _popularState.update { newState }
+        }
+
+        getLatest()
+    }
+
+    private fun getLatest() {
+        viewModelScope.launch {
+            val newState = useCase.getLatest()
+                .fold({
+                    stateErrorMessage = it.message
+                    _latestState.value.asFailure()
+                }, { model ->
+                    _latestState.value.asSuccess(model.toMovieState())
+                })
+            _latestState.update { newState }
         }
     }
 
@@ -48,7 +85,7 @@ class MovieViewModel @Inject constructor(
             true -> {
                 val moviesFiltered = mutableListOf<MovieState>()
 
-                _movieState.value.data.forEach { movie ->
+                _topRatedState.value.data.forEach { movie ->
                     if (movie.title.lowercase().contains(query.lowercase())) {
                         moviesFiltered.add(movie)
                     }
@@ -56,6 +93,6 @@ class MovieViewModel @Inject constructor(
 
                 moviesFiltered
             }
-            else -> _movieState.value.data
+            else -> _topRatedState.value.data
         }
 }

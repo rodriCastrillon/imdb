@@ -6,5 +6,7 @@ import com.imdb.data.db.MovieEntity
 
 interface MovieLocalDataSource {
     suspend fun getTopRated(): Either<ErrorFactory, List<MovieEntity>>
-    suspend fun insert(entity: List<MovieEntity>)
+    suspend fun getPopular(): Either<ErrorFactory, List<MovieEntity>>
+    suspend fun getLatest(): Either<ErrorFactory, MovieEntity>
+    suspend fun insert(type:String, entity: List<MovieEntity>)
 }

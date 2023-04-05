@@ -1,13 +1,13 @@
 package com.imdb.data.response
 
-data class MovieResponse(
+data class TopRatedResponse(
     val page: Int,
-    val results: List<MovieDetailResponse>,
+    val results: List<TopRatedDetailResponse>,
     val total_pages: Int,
     val total_results: Int
 )
 
-data class MovieDetailResponse(
+data class TopRatedDetailResponse(
     val id: Int,
     val adult: Boolean,
     val backdrop_path: String,

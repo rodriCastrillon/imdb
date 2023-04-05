@@ -5,5 +5,5 @@ interface RemoteConfigHandler {
 }
 
 object RemoteConfig : RemoteConfigHandler {
-    override var sessionTime = 6
+    override var sessionTime = 60
 }

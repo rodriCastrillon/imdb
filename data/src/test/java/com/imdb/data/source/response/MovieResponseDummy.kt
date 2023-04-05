@@ -1,14 +1,17 @@
 package com.imdb.data.source.response
 
-import com.imdb.data.response.MovieDetailResponse
-import com.imdb.data.response.MovieResponse
+import com.imdb.data.response.LatestResponse
+import com.imdb.data.response.PopularDetailResponse
+import com.imdb.data.response.PopularResponse
+import com.imdb.data.response.TopRatedDetailResponse
+import com.imdb.data.response.TopRatedResponse
 
 object MovieResponseDummy {
-    fun movieResponse() =
-        MovieResponse(
+    fun topRatedResponseMock() =
+        TopRatedResponse(
             page = 1,
             results = listOf(
-                MovieDetailResponse(
+                TopRatedDetailResponse(
                     id = 238,
                     adult = false,
                     backdrop_path = "/tmU7GeKVybMWFButWEGl2M4GeiP.jpg",
@@ -25,7 +28,7 @@ object MovieResponseDummy {
                     vote_count = 17642
                 ),
 
-                MovieDetailResponse(
+                TopRatedDetailResponse(
                     id = 278,
                     adult = false,
                     backdrop_path = "/wPU78OPN4BYEgWYdXyg0phMee64.jpg",
@@ -44,5 +47,64 @@ object MovieResponseDummy {
             ),
             total_pages = 546,
             total_results = 10912
+        )
+
+    fun popularResponseMock() =
+        PopularResponse(
+            page = 1,
+            results = listOf(
+                PopularDetailResponse(
+                    id = 76600,
+                    adult = false,
+                    backdrop_path = "/ovM06PdF3M8wvKb06i4sjW3xoww.jpg",
+                    poster_path = "/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+                    genre_ids = listOf(878, 12, 28),
+                    original_language = "en",
+                    original_title = "Avatar: The Way of Water",
+                    overview = "Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
+                    popularity = 8951.259,
+                    release_date = "2022-12-14",
+                    title = "Avatar: The Way of Water",
+                    video = false,
+                    vote_average = 7.8,
+                    vote_count = 6458
+                ),
+
+                PopularDetailResponse(
+                    id = 980078,
+                    adult = false,
+                    backdrop_path = "/wD2kUCX1Bb6oeIb2uz7kbdfLP6k.jpg",
+                    poster_path = "/s3u70iZ1mpY6W9rW1S6BxDMRNQt.jpg",
+                    genre_ids = listOf(27, 53),
+                    original_language = "en",
+                    original_title = "Winnie the Pooh: Blood and Honey",
+                    overview = "Christopher Robin is headed off to college and he has abandoned his old friends, Pooh and Piglet, which then leads to the duo embracing their inner monsters.",
+                    popularity = 3152.098,
+                    release_date = "2023-01-27",
+                    title = "Winnie the Pooh: Blood and Honey",
+                    video = false,
+                    vote_average = 5.9,
+                    vote_count = 327
+                )
+            ),
+            total_pages = 37740,
+            total_results = 754791
+        )
+
+    fun latestResponseMock() =
+        LatestResponse(
+            id = 1108896,
+            adult = false,
+            backdrop_path = "",
+            poster_path = "/4X3aF6wLQHoWKPcGKozWDmjLWCr.jpg",
+            original_language = "es",
+            original_title = "Outside is free",
+            overview = "",
+            popularity = 0.0,
+            release_date = "",
+            title = "Outside is free",
+            video = false,
+            vote_average = 8.0,
+            vote_count = 1
         )
 }

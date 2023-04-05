@@ -4,7 +4,9 @@ import com.imdb.core.helper.Either
 import com.imdb.data.network.MovieService
 import com.imdb.data.source.mapper.toEiterRight
 import com.imdb.data.source.network.enqueueResponse
-import com.imdb.data.source.response.MovieResponseDummy.movieResponse
+import com.imdb.data.source.response.MovieResponseDummy.latestResponseMock
+import com.imdb.data.source.response.MovieResponseDummy.popularResponseMock
+import com.imdb.data.source.response.MovieResponseDummy.topRatedResponseMock
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -45,14 +47,46 @@ class MovieRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `Given Movies When topRated is called Then the service return MovieResponse with code 200`() {
-        mockWebServer.enqueueResponse("movie_mock.json", 200)
+    fun `Given Movies When topRated method is called Then the service return TopRatedResponse with code 200`() {
+        mockWebServer.enqueueResponse("topRated_mock.json", 200)
         runBlocking {
             //Given
-            val result = movieResponse().toEiterRight()
+            val result = topRatedResponseMock().toEiterRight()
 
             //When
             val response = dataSource.getTopRated()
+
+            //Verify
+            assert(response is Either.Right)
+            assertEquals(result, response)
+        }
+    }
+
+    @Test
+    fun `Given Movies When popular method is called Then the service return PopularResponse with code 200`() {
+        mockWebServer.enqueueResponse("popular_mock.json", 200)
+        runBlocking {
+            //Given
+            val result = popularResponseMock().toEiterRight()
+
+            //When
+            val response = dataSource.getPopular()
+
+            //Verify
+            assert(response is Either.Right)
+            assertEquals(result, response)
+        }
+    }
+
+    @Test
+    fun `Given Movies When getLatest method is called Then the service return LatestResponse with code 200`() {
+        mockWebServer.enqueueResponse("latest_mock.json", 200)
+        runBlocking {
+            //Given
+            val result = latestResponseMock().toEiterRight()
+
+            //When
+            val response = dataSource.getLatest()
 
             //Verify
             assert(response is Either.Right)
