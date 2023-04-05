@@ -22,7 +22,7 @@ import org.junit.Test
 import org.mockito.Mock
 
 @HiltAndroidTest
-class DashBoardScreenTest {
+class SearchScreenTest {
 
     @get:Rule(order = 1)
     var hiltTestRule = HiltAndroidRule(this)
@@ -50,7 +50,7 @@ class DashBoardScreenTest {
         viewModel = MovieViewModel(useCase)
 
         composeRule.setContent {
-            DashBoardScreen(userState = UserState(), viewModel = viewModel)
+            SearchScreen(userState = UserState(), viewModel = viewModel)
         }
     }
 

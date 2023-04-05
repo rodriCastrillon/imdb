@@ -1,0 +1,46 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/ovM06PdF3M8wvKb06i4sjW3xoww.jpg",
+      "genre_ids": [
+        878,
+        12,
+        28
+      ],
+      "id": 76600,
+      "original_language": "en",
+      "original_title": "Avatar: The Way of Water",
+      "overview": "Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
+      "popularity": 8951.259,
+      "poster_path": "/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+      "release_date": "2022-12-14",
+      "title": "Avatar: The Way of Water",
+      "video": false,
+      "vote_average": 7.8,
+      "vote_count": 6458
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/wD2kUCX1Bb6oeIb2uz7kbdfLP6k.jpg",
+      "genre_ids": [
+        27,
+        53
+      ],
+      "id": 980078,
+      "original_language": "en",
+      "original_title": "Winnie the Pooh: Blood and Honey",
+      "overview": "Christopher Robin is headed off to college and he has abandoned his old friends, Pooh and Piglet, which then leads to the duo embracing their inner monsters.",
+      "popularity": 3152.098,
+      "poster_path": "/s3u70iZ1mpY6W9rW1S6BxDMRNQt.jpg",
+      "release_date": "2023-01-27",
+      "title": "Winnie the Pooh: Blood and Honey",
+      "video": false,
+      "vote_average": 5.9,
+      "vote_count": 327
+    }
+  ],
+  "total_pages": 37740,
+  "total_results": 754791
+}

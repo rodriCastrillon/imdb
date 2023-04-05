@@ -6,7 +6,9 @@ import com.imdb.data.source.local.MovieLocalDataSource
 import com.imdb.data.source.remote.MovieRemoteDataSource
 import com.imdb.domain.mapper.toMovieModel
 import com.imdb.domain.model.getMovieEntity
-import com.imdb.domain.model.getMovieResponse
+import com.imdb.domain.model.latestResponseMock
+import com.imdb.domain.model.popularResponseMock
+import com.imdb.domain.model.topRatedResponseMock
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -34,11 +36,11 @@ class MovieRepositoryTest {
     }
 
     @Test
-    fun `Given getTopRated right value When data source is executed Verify expected response`() =
+    fun `Given getTopRated method right value When data source is executed Verify expected response with code 200`() =
         runBlocking {
             //Given
             val listMoviesEntity = getMovieEntity()
-            val listMoviesResponse = getMovieResponse()
+            val listMoviesResponse = topRatedResponseMock()
 
             //When
             coEvery { localDataSource.getTopRated() } returns Either.Right(listMoviesEntity)
@@ -68,6 +70,82 @@ class MovieRepositoryTest {
 
             coVerify {
                 remoteDataSource.getTopRated()
+            }
+        }
+
+    @Test
+    fun `Given getPopular method right value When data source is executed Verify expected response with code 200`() =
+        runBlocking {
+            //Given
+            val listMoviesEntity = getMovieEntity()
+            val listMoviesResponse = popularResponseMock()
+
+            //When
+            coEvery { localDataSource.getPopular() } returns Either.Right(listMoviesEntity)
+            coEvery { remoteDataSource.getPopular() } returns Either.Right(listMoviesResponse)
+            val result = repository.getPopular()
+            //Verify
+            Assert.assertTrue(result is Either.Right)
+            Assert.assertEquals((result as Either.Right).r, listMoviesResponse.results.map { it.toMovieModel() })
+            Assert.assertTrue(result.r.isNotEmpty())
+            coVerify(exactly = 1) {
+                remoteDataSource.getPopular()
+            }
+        }
+
+    @Test
+    fun `Given getPopular left When repository call fails Then verify error state is 401`() =
+        runBlocking {
+            //Given
+            val errorFactory = ErrorFactory(errorCode = 401)
+            //When
+            coEvery { remoteDataSource.getPopular() } returns Either.Left(errorFactory)
+            val result = repository.getPopular()
+
+            //Verify
+            Assert.assertTrue(result is Either.Left)
+            Assert.assertEquals(401, (result as Either.Left).l.code)
+
+            coVerify {
+                remoteDataSource.getPopular()
+            }
+        }
+
+    @Test
+    fun `Given getLatest method right value When data source is executed Verify expected response with code 200`() =
+        runBlocking {
+            //Given
+            val listMoviesEntity = getMovieEntity().first()
+            val latestResponse = latestResponseMock()
+
+            //When
+            coEvery { localDataSource.getLatest() } returns Either.Right(listMoviesEntity)
+            coEvery { remoteDataSource.getLatest() } returns Either.Right(latestResponse)
+            val result = repository.getLatest()
+            //Verify
+            Assert.assertTrue(result is Either.Right)
+            Assert.assertEquals((result as Either.Right).r, latestResponse.toMovieModel())
+            Assert.assertTrue(result.r.id.isNotEmpty())
+            coVerify(exactly = 1) {
+                remoteDataSource.getLatest()
+            }
+        }
+
+    @Test
+    fun `Given getLatest left When repository call fails Then verify error state is 401`() =
+        runBlocking {
+            //Given
+            val errorFactory = ErrorFactory(errorCode = 401)
+            //When
+            coEvery { remoteDataSource.getLatest() } returns Either.Left(errorFactory)
+            val result = repository.getLatest()
+
+            //Verify
+            Assert.assertTrue(result is Either.Left)
+            Assert.assertEquals(401, (result as Either.Left).l.code)
+
+            coVerify {
+                remoteDataSource.getLatest()
             }
         }
 }

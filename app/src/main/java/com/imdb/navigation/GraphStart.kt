@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppNavHost(
+fun GraphStart(
     navController: NavHostController = rememberNavController(),
     activity: Activity,
     startDestination: String = SplashDestination.route
@@ -20,12 +20,12 @@ fun AppNavHost(
                 navController.navigate(destination) { popUpTo(origin) { inclusive = true } }
             })
 
-        loginGraph(onBack = {
-            navController.popBackStack(LoginDestination.route, false)
-        }
+        loginGraph(
+            onBack = {
+                navController.popBackStack(LoginDestination.route, false)
+            }
         ) { origin, destination ->
             navController.navigate(destination) { popUpTo(origin) { inclusive = true } }
         }
-
     }
 }

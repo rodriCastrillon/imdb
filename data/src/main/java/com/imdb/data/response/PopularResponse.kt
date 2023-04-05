@@ -1,16 +1,17 @@
-package com.imdb.data.db
+package com.imdb.data.response
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+data class PopularResponse(
+    val page: Int,
+    val results: List<PopularDetailResponse>,
+    val total_pages: Int,
+    val total_results: Int
+)
 
-@Entity(tableName = "movie")
-data class MovieEntity(
-    @PrimaryKey(autoGenerate = true)
-    val _unique: Int = 0,
-    val id: Int,
-    val type:String,
+data class PopularDetailResponse(
     val adult: Boolean,
     val backdrop_path: String,
+    val genre_ids: List<Int>,
+    val id: Int,
     val original_language: String,
     val original_title: String,
     val overview: String,

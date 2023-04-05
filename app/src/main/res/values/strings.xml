@@ -17,4 +17,9 @@
     <string name="exist">El usuario ya esta registrado</string>
     <string name="field_required">%1$s is required</string>
     <string name="welcome_user">Welcome %1$s</string>
+
+    <string name="home_screen">Home</string>
+    <string name="search_screen">Search</string>
+    <string name="profile_screen">Profile</string>
+    <string name="play_screen">Play</string>
 </resources>

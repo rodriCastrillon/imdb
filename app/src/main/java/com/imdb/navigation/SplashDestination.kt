@@ -6,14 +6,22 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.imdb.ui.screen.LoginScreen
+import com.imdb.ui.screen.MainScreen
 import com.imdb.ui.screen.SplashScreen
 
 object SplashDestination : DestinationNav {
     override val route: String = "splash_route"
-    override val destination: String = "splash_destination"
 }
 
-fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController, popUpTo:(String, String) -> Unit) {
+object LoginDestination : DestinationNav {
+    override val route: String = "login_route"
+}
+
+fun NavGraphBuilder.splashGraph(
+    activity: Activity,
+    navController: NavController,
+    popUpTo: (String, String) -> Unit
+) {
 
     composable(route = SplashDestination.route) {
         SplashScreen(
@@ -22,9 +30,9 @@ fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController
                     popUpTo(SplashDestination.route) { inclusive = true }
                 }
             },
-            onNavigateDashBoard = {
-                DashBoardDestination.userState = it
-                popUpTo(SplashDestination.route, DashBoardDestination.route)
+            onNavigateHome = {
+                HomeDestination.userState = it
+                popUpTo(SplashDestination.route, MainDestination.route)
             },
             viewModel = hiltViewModel()
         )
@@ -34,10 +42,8 @@ fun NavGraphBuilder.splashGraph(activity: Activity, navController: NavController
         LoginScreen(
             activity = activity,
             onNavigateHome = {
-                DashBoardDestination.userState = it
-                navController.navigate(DashBoardDestination.route) {
-                    popUpTo(LoginDestination.route) { inclusive = true }
-                }
+                HomeDestination.userState = it
+                popUpTo(LoginDestination.route, MainDestination.route)
             },
             onNavigateRegister = {
                 navController.navigate(RegisterDestination.route)

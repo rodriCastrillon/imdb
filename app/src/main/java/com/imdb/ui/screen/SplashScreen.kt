@@ -28,7 +28,7 @@ import com.imdb.viewmodel.SplashViewModel
 @Composable
 fun SplashScreen(
     onNavigateLogin: () -> Unit,
-    onNavigateDashBoard: (UserState) -> Unit,
+    onNavigateHome: (UserState) -> Unit,
     viewModel: SplashViewModel
 ) {
     val localContext = LocalContext.current
@@ -44,7 +44,7 @@ fun SplashScreen(
             viewModel.onClear()
         }
         is LoadState.Success -> {
-            onNavigateDashBoard(viewModel.userSate)
+            onNavigateHome(viewModel.userSate)
             viewModel.onClear()
         }
         is LoadState.InFlight -> {}

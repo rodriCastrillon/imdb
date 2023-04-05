@@ -1,14 +1,7 @@
-package com.imdb.data.db
+package com.imdb.data.response
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "movie")
-data class MovieEntity(
-    @PrimaryKey(autoGenerate = true)
-    val _unique: Int = 0,
+data class LatestResponse(
     val id: Int,
-    val type:String,
     val adult: Boolean,
     val backdrop_path: String,
     val original_language: String,

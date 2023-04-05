@@ -37,7 +37,7 @@ class MovieViewModelTest {
         viewModel = MovieViewModel(useCase = useCase)
 
         //Verify
-        viewModel.movieState.test {
+        viewModel.topRatedState.test {
             assert(awaitItem().isLoading)
             assert(awaitItem().data.isNotEmpty())
             cancelAndConsumeRemainingEvents()
@@ -55,7 +55,7 @@ class MovieViewModelTest {
         viewModel = MovieViewModel(useCase = useCase)
 
         //Verify
-        viewModel.movieState.test {
+        viewModel.topRatedState.test {
             assert(awaitItem().isLoading)
             assert(awaitItem().failed)
             cancelAndConsumeRemainingEvents()

@@ -49,9 +49,9 @@ import com.imdb.ui.theme.whiteF5F5F5
 import com.imdb.viewmodel.MovieViewModel
 
 @Composable
-fun DashBoardScreen(userState: UserState, viewModel: MovieViewModel = hiltViewModel()) {
+fun SearchScreen(userState: UserState, viewModel: MovieViewModel = hiltViewModel()) {
     val localContext = LocalContext.current
-    val movieState by viewModel.movieState.collectAsState()
+    val movieState by viewModel.topRatedState.collectAsState()
     val query = remember { mutableStateOf(TextFieldValue("")) }
 
     when {
