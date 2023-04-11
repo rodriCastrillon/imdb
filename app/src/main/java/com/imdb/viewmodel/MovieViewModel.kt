@@ -30,7 +30,7 @@ class MovieViewModel @Inject constructor(
     private val _popularState = MutableStateFlow(LoadingViewState<List<MovieState>>(emptyList()))
     val popularStateState = _popularState.asStateFlow()
 
-    private val _latestState = MutableStateFlow(LoadingViewState<MovieState>(MovieState()))
+    private val _latestState = MutableStateFlow(LoadingViewState(MovieState()))
     val latestState = _latestState.asStateFlow()
 
     init {
@@ -62,9 +62,11 @@ class MovieViewModel @Inject constructor(
                     _popularState.value.asSuccess(model.map { it.toMovieState() })
                 })
             _popularState.update { newState }
+            //_latestState.update{_latestState.value.asSuccess(newState.data.single())}
         }
 
-        getLatest()
+
+        //getLatest()
     }
 
     private fun getLatest() {

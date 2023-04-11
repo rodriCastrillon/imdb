@@ -2,6 +2,7 @@ package com.imdb.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val whiteFFFFFF = Color(0xFFFFFFFF)
 val whiteF5F5F5 = Color(0xFFF5F5F5)
 val black000000 = Color(0xFF000000)
 val gray9D9C9C = Color(0xFF9D9C9C)

@@ -27,8 +27,8 @@ object DetailDestination : DestinationNav {
 }
 
 sealed class Screen(val route: String, @StringRes val name: Int, @DrawableRes val icon: Int) {
-    object Home : Screen(HomeDestination.route, R.string.home_screen, R.drawable.ic_google)
-    object Search : Screen(SearchDestination.route, R.string.search_screen, R.drawable.ic_facebook)
-    object Profile : Screen(ProfileDestination.route, R.string.profile_screen, R.drawable.ic_apple)
-    object Play : Screen(PlayDestination.route, R.string.play_screen, R.drawable.ic_google)
+    object Home : Screen(HomeDestination.route, R.string.home_screen, R.drawable.ic_home)
+    object Search : Screen(SearchDestination.route, R.string.search_screen, R.drawable.ic_search)
+    object Play : Screen(PlayDestination.route, R.string.play_screen, R.drawable.ic_play)
+    object Profile : Screen(ProfileDestination.route, R.string.name_user, R.drawable.ic_account)
 }

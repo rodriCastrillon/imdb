@@ -22,4 +22,5 @@
     <string name="search_screen">Search</string>
     <string name="profile_screen">Profile</string>
     <string name="play_screen">Play</string>
+    <string name="name_user">Rodrigo</string>
 </resources>

@@ -26,8 +26,8 @@ fun BottomNavigation(navController:NavHostController) {
     val screes = listOf(
         Screen.Home,
         Screen.Search,
-        Screen.Profile,
-        Screen.Play
+        Screen.Play,
+        Screen.Profile
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
